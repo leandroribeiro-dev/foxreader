@@ -6,6 +6,18 @@ Todas as mudanças relevantes do projeto serão registradas aqui.
 
 
 
+\## \[2.2] - Em desenvolvimento
+
+
+
+\### 🚧 Em andamento
+
+\- Estrutura inicial da nova versão
+
+\- Preparação para melhorias e ajustes
+
+
+
 \---
 
 
