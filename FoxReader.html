@@ -2,15 +2,15 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader - Caixa de Leitura</title>
+  <title>FoxReader V2.0</title>
 
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       color: #222;
-      max-width: 900px;
-      margin: 40px auto;
+      max-width: 980px;
+      margin: 30px auto;
       padding: 20px;
       line-height: 1.6;
     }
@@ -18,6 +18,63 @@
     h1 {
       text-align: center;
       margin-bottom: 10px;
+    }
+
+    .info {
+      text-align: center;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    select,
+    input[type="range"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 15px;
+    }
+
+    .linha {
+      display: grid;
+      grid-template-columns: 1fr 120px;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 15px;
+      background: #1f6feb;
+      color: white;
+    }
+
+    button:hover {
+      background: #1557b0;
+    }
+
+    button.stop {
+      background: #b42318;
+    }
+
+    button.stop:hover {
+      background: #8a1c13;
     }
 
     .box {
@@ -31,24 +88,211 @@
       white-space: pre-wrap;
     }
 
-    .info {
+    .status {
       text-align: center;
+      font-size: 14px;
       color: #555;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+    }
+
+    .aviso {
+      background: #fff8d6;
+      border: 1px solid #e5c94a;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 15px;
     }
   </style>
 </head>
 
 <body>
-  <h1>FoxReader</h1>
+  <h1>FoxReader V2.0</h1>
 
   <p class="info">
-    Cole seu texto abaixo. Depois selecione o texto, clique com o botão direito
-    e escolha <strong>Ler em voz alta</strong> ou use o recurso de leitura do Edge.
+    Cole seu texto abaixo, escolha uma voz local em português e use os botões de leitura.
   </p>
 
-  <div class="box" contenteditable="true">
+  <div class="aviso">
+    Dica: prefira vozes sem as palavras <strong>Online</strong> ou <strong>Natural</strong>.
+    Elas podem falhar no leitor via HTML.
+  </div>
+
+  <div class="controls">
+    <label>
+      Voz:
+      <select id="seletorVoz">
+        <option>Carregando vozes...</option>
+      </select>
+    </label>
+
+    <div class="linha">
+      <label>
+        Velocidade:
+        <input id="velocidade" type="range" min="0.6" max="1.6" step="0.1" value="1">
+      </label>
+
+      <strong id="valorVelocidade">1.0x</strong>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <button onclick="testarVoz()">Testar voz</button>
+    <button onclick="lerTexto()">Ler texto</button>
+    <button onclick="pausarTexto()">Pausar</button>
+    <button onclick="continuarTexto()">Continuar</button>
+    <button class="stop" onclick="pararTexto()">Parar</button>
+    <button onclick="carregarVozes()">Recarregar vozes</button>
+  </div>
+
+  <div id="status" class="status">
+    Aguardando carregamento das vozes.
+  </div>
+
+  <div id="caixaTexto" class="box" contenteditable="true">
 Cole seu texto aqui...
   </div>
+
+  <script>
+    let vozesDisponiveis = [];
+
+    const seletor = document.getElementById("seletorVoz");
+    const statusBox = document.getElementById("status");
+    const velocidade = document.getElementById("velocidade");
+    const valorVelocidade = document.getElementById("valorVelocidade");
+
+    velocidade.addEventListener("input", function () {
+      valorVelocidade.textContent = Number(velocidade.value).toFixed(1) + "x";
+    });
+
+    function carregarVozes() {
+      vozesDisponiveis = speechSynthesis.getVoices();
+
+      seletor.innerHTML = "";
+
+      // Filtra vozes em português
+      let vozesPortugues = vozesDisponiveis.filter(voz =>
+        voz.lang.toLowerCase().startsWith("pt")
+      );
+
+      // Remove vozes online/natural, que podem falhar no HTML
+      let vozesLocaisPortugues = vozesPortugues.filter(voz => {
+        const nome = voz.name.toLowerCase();
+        return !nome.includes("online") && !nome.includes("natural");
+      });
+
+      let listaFinal = [];
+
+      if (vozesLocaisPortugues.length > 0) {
+        listaFinal = vozesLocaisPortugues;
+        statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es) locais em português.`;
+      } else if (vozesPortugues.length > 0) {
+        listaFinal = vozesPortugues;
+        statusBox.textContent = "Nenhuma voz local em português encontrada. Exibindo vozes em português disponíveis.";
+      } else {
+        listaFinal = vozesDisponiveis;
+        statusBox.textContent = "Nenhuma voz em português encontrada. Exibindo todas as vozes.";
+      }
+
+      if (listaFinal.length === 0) {
+        const option = document.createElement("option");
+        option.textContent = "Nenhuma voz encontrada";
+        option.value = "";
+        seletor.appendChild(option);
+        return;
+      }
+
+      listaFinal.forEach((voz) => {
+        const option = document.createElement("option");
+        option.value = voz.voiceURI;
+        option.textContent = `${voz.name} (${voz.lang})`;
+        seletor.appendChild(option);
+      });
+    }
+
+    function obterVozSelecionada() {
+      const voiceURI = seletor.value;
+
+      return vozesDisponiveis.find(voz => voz.voiceURI === voiceURI) || null;
+    }
+
+    function falar(texto) {
+      if (!texto.trim()) {
+        alert("Não há texto para leitura.");
+        return;
+      }
+
+      speechSynthesis.cancel();
+
+      const fala = new SpeechSynthesisUtterance(texto);
+      const vozSelecionada = obterVozSelecionada();
+
+      fala.rate = Number(velocidade.value);
+      fala.pitch = 1;
+      fala.volume = 1;
+      fala.lang = "pt-BR";
+
+      if (vozSelecionada) {
+        fala.voice = vozSelecionada;
+        fala.lang = vozSelecionada.lang;
+
+        statusBox.textContent = `Tentando ler com: ${vozSelecionada.name} (${vozSelecionada.lang})`;
+      } else {
+        statusBox.textContent = "Lendo com a voz padrão do navegador.";
+      }
+
+      fala.onstart = function () {
+        if (vozSelecionada) {
+          statusBox.textContent = `Lendo com: ${vozSelecionada.name} (${vozSelecionada.lang})`;
+        }
+      };
+
+      fala.onerror = function (event) {
+        statusBox.textContent = "Erro na leitura. Tente outra voz, de preferência uma voz local/offline.";
+        console.error("Erro SpeechSynthesis:", event);
+      };
+
+      fala.onend = function () {
+        statusBox.textContent = "Leitura concluída.";
+      };
+
+      speechSynthesis.speak(fala);
+    }
+
+    function testarVoz() {
+      falar("Teste de leitura do FoxReader. Esta é uma voz em português.");
+    }
+
+    function lerTexto() {
+      const texto = document.getElementById("caixaTexto").innerText.trim();
+      falar(texto);
+    }
+
+    function pausarTexto() {
+      if (speechSynthesis.speaking && !speechSynthesis.paused) {
+        speechSynthesis.pause();
+        statusBox.textContent = "Leitura pausada.";
+      }
+    }
+
+    function continuarTexto() {
+      if (speechSynthesis.paused) {
+        speechSynthesis.resume();
+        statusBox.textContent = "Leitura retomada.";
+      }
+    }
+
+    function pararTexto() {
+      speechSynthesis.cancel();
+      statusBox.textContent = "Leitura parada.";
+    }
+
+    speechSynthesis.onvoiceschanged = carregarVozes;
+
+    carregarVozes();
+
+    // Segunda tentativa, pois alguns navegadores carregam as vozes com atraso
+    setTimeout(carregarVozes, 1000);
+  </script>
 </body>
 </html>
