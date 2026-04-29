@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V2.0</title>
+  <title>FoxReader V2.2</title>
 
   <style>
     body {
@@ -26,6 +26,15 @@
       margin-bottom: 20px;
     }
 
+    .aviso {
+      background: #fff8d6;
+      border: 1px solid #e5c94a;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
     .controls {
       display: grid;
       grid-template-columns: 1fr;
@@ -45,6 +54,13 @@
       grid-template-columns: 1fr 120px;
       gap: 12px;
       align-items: center;
+    }
+
+    .checkbox-linha {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 15px;
     }
 
     .toolbar {
@@ -77,6 +93,14 @@
       background: #8a1c13;
     }
 
+    button.clear {
+      background: #555;
+    }
+
+    button.clear:hover {
+      background: #333;
+    }
+
     .box {
       background: white;
       border: 1px solid #ccc;
@@ -88,34 +112,32 @@
       white-space: pre-wrap;
     }
 
+    /* Placeholder para div contenteditable */
+    .box:empty::before {
+      content: attr(data-placeholder);
+      color: #888;
+      pointer-events: none;
+    }
+
     .status {
       text-align: center;
       font-size: 14px;
       color: #555;
       margin-bottom: 15px;
     }
-
-    .aviso {
-      background: #fff8d6;
-      border: 1px solid #e5c94a;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
   </style>
 </head>
 
 <body>
-  <h1>FoxReader V2.0</h1>
+  <h1>FoxReader V2.2</h1>
 
   <p class="info">
-    Cole seu texto abaixo, escolha uma voz local em português e use os botões de leitura.
+    Cole seu texto abaixo, escolha uma voz e use os botões de leitura.
   </p>
 
   <div class="aviso">
-    Dica: prefira vozes sem as palavras <strong>Online</strong> ou <strong>Natural</strong>.
-    Elas podem falhar no leitor via HTML.
+    Vozes <strong>Online/Natural</strong> podem ser mais agradáveis, mas podem falhar no HTML.
+    As vozes locais, como <strong>Microsoft Maria</strong> e <strong>Microsoft Daniel</strong>, tendem a ser mais estáveis.
   </div>
 
   <div class="controls">
@@ -124,6 +146,11 @@
       <select id="seletorVoz">
         <option>Carregando vozes...</option>
       </select>
+    </label>
+
+    <label class="checkbox-linha">
+      <input type="checkbox" id="mostrarOnline" onchange="carregarVozes()">
+      Mostrar também vozes Online/Natural
     </label>
 
     <div class="linha">
@@ -142,6 +169,7 @@
     <button onclick="pausarTexto()">Pausar</button>
     <button onclick="continuarTexto()">Continuar</button>
     <button class="stop" onclick="pararTexto()">Parar</button>
+    <button class="clear" onclick="limparTexto()">Limpar texto</button>
     <button onclick="carregarVozes()">Recarregar vozes</button>
   </div>
 
@@ -149,9 +177,12 @@
     Aguardando carregamento das vozes.
   </div>
 
-  <div id="caixaTexto" class="box" contenteditable="true">
-Cole seu texto aqui...
-  </div>
+  <div
+    id="caixaTexto"
+    class="box"
+    contenteditable="true"
+    data-placeholder="Cole seu texto aqui..."
+  ></div>
 
   <script>
     let vozesDisponiveis = [];
@@ -160,38 +191,49 @@ Cole seu texto aqui...
     const statusBox = document.getElementById("status");
     const velocidade = document.getElementById("velocidade");
     const valorVelocidade = document.getElementById("valorVelocidade");
+    const mostrarOnline = document.getElementById("mostrarOnline");
+    const caixaTexto = document.getElementById("caixaTexto");
 
     velocidade.addEventListener("input", function () {
       valorVelocidade.textContent = Number(velocidade.value).toFixed(1) + "x";
     });
+
+    function ehVozOnlineOuNatural(voz) {
+      const nome = voz.name.toLowerCase();
+
+      return (
+        nome.includes("online") ||
+        nome.includes("natural")
+      );
+    }
 
     function carregarVozes() {
       vozesDisponiveis = speechSynthesis.getVoices();
 
       seletor.innerHTML = "";
 
-      // Filtra vozes em português
       let vozesPortugues = vozesDisponiveis.filter(voz =>
         voz.lang.toLowerCase().startsWith("pt")
       );
 
-      // Remove vozes online/natural, que podem falhar no HTML
-      let vozesLocaisPortugues = vozesPortugues.filter(voz => {
-        const nome = voz.name.toLowerCase();
-        return !nome.includes("online") && !nome.includes("natural");
-      });
+      let listaFinal = vozesPortugues;
 
-      let listaFinal = [];
+      if (!mostrarOnline.checked) {
+        listaFinal = vozesPortugues.filter(voz => !ehVozOnlineOuNatural(voz));
+      }
 
-      if (vozesLocaisPortugues.length > 0) {
-        listaFinal = vozesLocaisPortugues;
-        statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es) locais em português.`;
-      } else if (vozesPortugues.length > 0) {
+      if (listaFinal.length === 0 && vozesPortugues.length > 0) {
         listaFinal = vozesPortugues;
         statusBox.textContent = "Nenhuma voz local em português encontrada. Exibindo vozes em português disponíveis.";
+      } else if (listaFinal.length > 0) {
+        if (mostrarOnline.checked) {
+          statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es) em português, incluindo Online/Natural.`;
+        } else {
+          statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es) locais em português.`;
+        }
       } else {
         listaFinal = vozesDisponiveis;
-        statusBox.textContent = "Nenhuma voz em português encontrada. Exibindo todas as vozes.";
+        statusBox.textContent = "Nenhuma voz em português encontrada. Exibindo todas as vozes disponíveis.";
       }
 
       if (listaFinal.length === 0) {
@@ -205,7 +247,16 @@ Cole seu texto aqui...
       listaFinal.forEach((voz) => {
         const option = document.createElement("option");
         option.value = voz.voiceURI;
-        option.textContent = `${voz.name} (${voz.lang})`;
+
+        let marcador = "";
+
+        if (ehVozOnlineOuNatural(voz)) {
+          marcador = " [Online/Natural]";
+        } else {
+          marcador = " [Local]";
+        }
+
+        option.textContent = `${voz.name} (${voz.lang})${marcador}`;
         seletor.appendChild(option);
       });
     }
@@ -236,7 +287,11 @@ Cole seu texto aqui...
         fala.voice = vozSelecionada;
         fala.lang = vozSelecionada.lang;
 
-        statusBox.textContent = `Tentando ler com: ${vozSelecionada.name} (${vozSelecionada.lang})`;
+        if (ehVozOnlineOuNatural(vozSelecionada)) {
+          statusBox.textContent = `Tentando ler com voz Online/Natural: ${vozSelecionada.name}`;
+        } else {
+          statusBox.textContent = `Tentando ler com voz local: ${vozSelecionada.name}`;
+        }
       } else {
         statusBox.textContent = "Lendo com a voz padrão do navegador.";
       }
@@ -248,7 +303,7 @@ Cole seu texto aqui...
       };
 
       fala.onerror = function (event) {
-        statusBox.textContent = "Erro na leitura. Tente outra voz, de preferência uma voz local/offline.";
+        statusBox.textContent = "Erro na leitura. Tente uma voz local/offline.";
         console.error("Erro SpeechSynthesis:", event);
       };
 
@@ -264,7 +319,7 @@ Cole seu texto aqui...
     }
 
     function lerTexto() {
-      const texto = document.getElementById("caixaTexto").innerText.trim();
+      const texto = caixaTexto.innerText.trim();
       falar(texto);
     }
 
@@ -287,11 +342,17 @@ Cole seu texto aqui...
       statusBox.textContent = "Leitura parada.";
     }
 
+    function limparTexto() {
+      pararTexto();
+      caixaTexto.innerText = "";
+      caixaTexto.focus();
+      statusBox.textContent = "Texto limpo.";
+    }
+
     speechSynthesis.onvoiceschanged = carregarVozes;
 
     carregarVozes();
 
-    // Segunda tentativa, pois alguns navegadores carregam as vozes com atraso
     setTimeout(carregarVozes, 1000);
   </script>
 </body>
