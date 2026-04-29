@@ -1,0 +1,36 @@
+# Sistema
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Arquivos temporários
+*.tmp
+*.bak
+*.swp
+
+# Cache
+.cache/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Python (caso use depois)
+__pycache__/
+*.pyc
+
+# Node (caso use no futuro)
+node_modules/
+
+# Ambiente
+.env
+
+# Arquivos de execução
+*.exe
+
+# Backup / testes locais
+legacy/ArquivoTeste.txt
+legacy/*.bat
+legacy/
