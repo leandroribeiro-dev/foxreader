@@ -22,6 +22,10 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 - Teste de voz
 - Recarregar vozes
 - Área editável para inserção de texto
+- Opção para exibir vozes Online/Natural
+- Identificação visual de tipo de voz ([Local] / [Online/Natural])
+- Botão para limpar texto
+- Placeholder dinâmico na área de texto
 
 ---
 
@@ -33,6 +37,10 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
   - Voz local em português → prioridade
   - Voz em português → alternativa
   - Todas as vozes → último recurso
+- Classificação de vozes:
+  - [Local] → mais estáveis
+  - [Online/Natural] → melhor qualidade, porém instáveis
+- Controle manual para exibir ou ocultar vozes online
 
 ---
 
@@ -49,6 +57,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 1. Abra o arquivo `FoxReader.html` no navegador
 2. Aguarde o carregamento das vozes
 3. Escolha uma voz
+3.1 (Opcional) Marque "Mostrar vozes Online/Natural" para ampliar as opções
 4. Cole ou digite o texto
 5. Clique em **Ler texto**
 
