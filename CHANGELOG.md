@@ -1,28 +1,70 @@
-\# CHANGELOG
+\# 📜 CHANGELOG
 
 
 
-\## \[0.1.0] - Versão inicial
+Todas as mudanças relevantes do projeto serão registradas aqui.
 
 
 
-\### Adicionado
+\---
 
 
 
-\- Estrutura inicial em HTML.
-
-\- Caixa editável para inserção de texto.
-
-\- Estilização básica com CSS.
-
-\- Instrução de uso com recurso nativo de leitura em voz alta do navegador.
+\## \[2.0] - 2026-04-29
 
 
 
-\### Observação
+\### 🚀 Adicionado
+
+\- Interface completa com controles de leitura
+
+\- Seleção dinâmica de vozes
+
+\- Controle de velocidade (range)
+
+\- Botões de controle (Ler, Pausar, Continuar, Parar)
+
+\- Teste de voz
+
+\- Recarregamento de vozes
 
 
 
-Esta versão ainda não possui JavaScript, controles próprios de leitura ou seleção interna de vozes.
+\### 🧠 Melhorado
+
+\- Filtro automático de vozes em português
+
+\- Priorização de vozes locais (offline)
+
+\- Exclusão de vozes instáveis (Online/Natural)
+
+\- Fallback inteligente para vozes disponíveis
+
+
+
+\### 🎨 Interface
+
+\- Layout centralizado e limpo
+
+\- Área de texto editável
+
+\- Status dinâmico de leitura
+
+\- Avisos orientativos ao usuário
+
+
+
+\---
+
+
+
+\## \[1.0] - Inicial
+
+
+
+\### 🚀 Adicionado
+
+\- Estrutura básica HTML
+
+\- Leitura simples via SpeechSynthesis
 
