@@ -12,6 +12,7 @@ Thumbs.db
 
 # Cache
 .cache/
+*.cache
 
 # Editor / IDE
 .vscode/
@@ -27,10 +28,10 @@ node_modules/
 # Ambiente
 .env
 
-# Arquivos de execução
+# Build / executáveis
+dist/
+build/
 *.exe
 
 # Backup / testes locais
-legacy/ArquivoTeste.txt
-legacy/*.bat
 legacy/
