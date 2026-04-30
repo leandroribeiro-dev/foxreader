@@ -6,6 +6,36 @@ Todas as mudanças relevantes do projeto serão registradas aqui.
 
 
 
+\## \[3.0] - Em desenvolvimento
+
+
+
+\### ✨ Adicionado
+
+\- Destaque visual da frase sendo lida em tempo real
+
+\- Exibição dinâmica do trecho atual em “Lendo agora”
+
+\- Função de normalização de texto para melhor leitura
+
+\- Botão para alternar entre vozes principais e todas as vozes
+
+\- Scroll automático acompanhando a leitura
+
+
+
+\### 🔧 Melhorado
+
+\- Organização do layout e experiência do usuário (UI)
+
+\- Lógica de leitura por frases
+
+\- Controle e seleção de vozes
+
+\- Tratamento de texto antes da leitura
+
+
+
 \## \[2.2] - 2026-04-29
 
 
