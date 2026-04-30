@@ -2,77 +2,82 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V2.2</title>
+  <title>FoxReader V3</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       color: #222;
-      max-width: 980px;
-      margin: 30px auto;
-      padding: 20px;
+      max-width: 1100px;
+      margin: 20px auto;
+      padding: 16px;
       line-height: 1.6;
+    }
+
+    header {
+      background: #ffffff;
+      border: 1px solid #d0d0d0;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 10px;
+      margin: 0 0 6px 0;
+      font-size: 32px;
     }
 
-    .info {
+    .subtitulo {
       text-align: center;
       color: #555;
-      margin-bottom: 20px;
+      margin: 0 0 16px 0;
+      font-size: 15px;
     }
 
-    .aviso {
-      background: #fff8d6;
-      border: 1px solid #e5c94a;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      margin-bottom: 15px;
-    }
-
-    .controls {
+    .linha-controles {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-bottom: 18px;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 14px;
+    }
+
+    label {
+      font-size: 14px;
+      color: #222;
     }
 
     select,
-    input[type="range"] {
+    input[type="number"] {
       width: 100%;
       padding: 8px;
       font-size: 15px;
+      border: 1px solid #999;
+      border-radius: 5px;
+      background: white;
     }
 
-    .linha {
-      display: grid;
-      grid-template-columns: 1fr 120px;
-      gap: 12px;
-      align-items: center;
+    .velocidade-box {
+      width: 125px;
     }
 
-    .checkbox-linha {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 15px;
-    }
-
-    .toolbar {
+    .botoes {
       display: flex;
       gap: 10px;
       justify-content: center;
-      margin-bottom: 15px;
       flex-wrap: wrap;
+      margin-bottom: 12px;
     }
 
     button {
-      padding: 10px 18px;
+      padding: 9px 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -93,12 +98,43 @@
       background: #8a1c13;
     }
 
-    button.clear {
+    button.clear,
+    button.adjust {
       background: #555;
     }
 
-    button.clear:hover {
+    button.clear:hover,
+    button.adjust:hover {
       background: #333;
+    }
+
+    button.secondary {
+      background: #4444cc;
+    }
+
+    button.secondary:hover {
+      background: #3030a0;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      margin-top: 6px;
+    }
+
+    .lendo-agora {
+      background: #fffbe6;
+      border: 1px solid #e0c84f;
+      border-radius: 8px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 15px;
+      min-height: 46px;
+    }
+
+    .lendo-agora strong {
+      color: #333;
     }
 
     .box {
@@ -106,75 +142,86 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 20px;
-      min-height: 350px;
+      min-height: 380px;
       font-size: 18px;
       outline: none;
       white-space: pre-wrap;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
-    /* Placeholder para div contenteditable */
     .box:empty::before {
       content: attr(data-placeholder);
       color: #888;
       pointer-events: none;
     }
 
-    .status {
-      text-align: center;
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 15px;
+    .frase-marcada {
+      background: #fff176;
+      border-radius: 4px;
+      padding: 2px 3px;
+    }
+
+    @media (max-width: 800px) {
+      .linha-controles {
+        grid-template-columns: 1fr;
+      }
+
+      .velocidade-box {
+        width: 100%;
+      }
+
+      button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
-  <h1>FoxReader V2.2</h1>
 
-  <p class="info">
-    Cole seu texto abaixo, escolha uma voz e use os botões de leitura.
-  </p>
+  <header>
+    <h1>FoxReader V3</h1>
 
-  <div class="aviso">
-    Vozes <strong>Online/Natural</strong> podem ser mais agradáveis, mas podem falhar no HTML.
-    As vozes locais, como <strong>Microsoft Maria</strong> e <strong>Microsoft Daniel</strong>, tendem a ser mais estáveis.
-  </div>
+    <p class="subtitulo">
+      Cole seu texto, escolha uma voz e use os controles de leitura.
+    </p>
 
-  <div class="controls">
-    <label>
-      Voz:
-      <select id="seletorVoz">
-        <option>Carregando vozes...</option>
-      </select>
-    </label>
-
-    <label class="checkbox-linha">
-      <input type="checkbox" id="mostrarOnline" onchange="carregarVozes()">
-      Mostrar também vozes Online/Natural
-    </label>
-
-    <div class="linha">
+    <div class="linha-controles">
       <label>
-        Velocidade:
-        <input id="velocidade" type="range" min="0.6" max="1.6" step="0.1" value="1">
+        Voz:
+        <select id="seletorVoz">
+          <option>Carregando vozes...</option>
+        </select>
       </label>
 
-      <strong id="valorVelocidade">1.0x</strong>
+      <button id="btnAlternarVozes" class="secondary" onclick="alternarListaVozes()">
+        Mostrar todas
+      </button>
+
+      <label class="velocidade-box">
+        Velocidade:
+        <input id="velocidade" type="number" min="0.6" max="1.8" step="0.1" value="1.0">
+      </label>
     </div>
-  </div>
 
-  <div class="toolbar">
-    <button onclick="testarVoz()">Testar voz</button>
-    <button onclick="lerTexto()">Ler texto</button>
-    <button onclick="pausarTexto()">Pausar</button>
-    <button onclick="continuarTexto()">Continuar</button>
-    <button class="stop" onclick="pararTexto()">Parar</button>
-    <button class="clear" onclick="limparTexto()">Limpar texto</button>
-    <button onclick="carregarVozes()">Recarregar vozes</button>
-  </div>
+    <div class="botoes">
+      <button onclick="testarVoz()">Testar voz</button>
+      <button onclick="lerTexto()">Ler texto</button>
+      <button onclick="pausarTexto()">Pausar</button>
+      <button onclick="continuarTexto()">Continuar</button>
+      <button class="stop" onclick="pararTexto()">Parar</button>
+      <button class="clear" onclick="limparTexto()">Limpar texto</button>
+      <button class="adjust" onclick="normalizarTexto()">Normalizar texto</button>
+      <button onclick="carregarVozes()">Recarregar vozes</button>
+    </div>
 
-  <div id="status" class="status">
-    Aguardando carregamento das vozes.
+    <div id="status" class="status">
+      Aguardando carregamento das vozes.
+    </div>
+  </header>
+
+  <div id="lendoAgora" class="lendo-agora">
+    <strong>Lendo agora:</strong> —
   </div>
 
   <div
@@ -186,25 +233,68 @@
 
   <script>
     let vozesDisponiveis = [];
+    let mostrarTodasAsVozes = false;
+
+    let textoOriginalLeitura = "";
+    let frasesLeitura = [];
+    let leituraEmAndamento = null;
 
     const seletor = document.getElementById("seletorVoz");
     const statusBox = document.getElementById("status");
     const velocidade = document.getElementById("velocidade");
-    const valorVelocidade = document.getElementById("valorVelocidade");
-    const mostrarOnline = document.getElementById("mostrarOnline");
     const caixaTexto = document.getElementById("caixaTexto");
+    const lendoAgora = document.getElementById("lendoAgora");
+    const btnAlternarVozes = document.getElementById("btnAlternarVozes");
 
-    velocidade.addEventListener("input", function () {
-      valorVelocidade.textContent = Number(velocidade.value).toFixed(1) + "x";
-    });
+    function normalizarNome(texto) {
+      return texto
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "");
+    }
+
+    function ehVozPrincipal(voz) {
+      const nome = normalizarNome(voz.name);
+
+      return (
+        nome.includes("antonio") ||
+        nome.includes("francisca") ||
+        nome.includes("daniel") ||
+        nome.includes("maria")
+      );
+    }
+
+    function ehVozAntonio(voz) {
+      const nome = normalizarNome(voz.name);
+      return nome.includes("antonio");
+    }
+
+    function ehVozFrancisca(voz) {
+      const nome = normalizarNome(voz.name);
+      return nome.includes("francisca");
+    }
 
     function ehVozOnlineOuNatural(voz) {
-      const nome = voz.name.toLowerCase();
+      const nome = normalizarNome(voz.name);
 
       return (
         nome.includes("online") ||
         nome.includes("natural")
       );
+    }
+
+    function ordenarVozesPrincipais(vozes) {
+      const ordem = ["antonio", "francisca", "daniel", "maria"];
+
+      return vozes.sort((a, b) => {
+        const nomeA = normalizarNome(a.name);
+        const nomeB = normalizarNome(b.name);
+
+        const posA = ordem.findIndex(item => nomeA.includes(item));
+        const posB = ordem.findIndex(item => nomeB.includes(item));
+
+        return posA - posB;
+      });
     }
 
     function carregarVozes() {
@@ -216,24 +306,19 @@
         voz.lang.toLowerCase().startsWith("pt")
       );
 
-      let listaFinal = vozesPortugues;
+      let listaFinal = [];
 
-      if (!mostrarOnline.checked) {
-        listaFinal = vozesPortugues.filter(voz => !ehVozOnlineOuNatural(voz));
+      if (mostrarTodasAsVozes) {
+        listaFinal = vozesPortugues.length > 0 ? vozesPortugues : vozesDisponiveis;
+        btnAlternarVozes.textContent = "Mostrar principais";
+      } else {
+        listaFinal = vozesPortugues.filter(ehVozPrincipal);
+        listaFinal = ordenarVozesPrincipais(listaFinal);
+        btnAlternarVozes.textContent = "Mostrar todas";
       }
 
-      if (listaFinal.length === 0 && vozesPortugues.length > 0) {
-        listaFinal = vozesPortugues;
-        statusBox.textContent = "Nenhuma voz local em português encontrada. Exibindo vozes em português disponíveis.";
-      } else if (listaFinal.length > 0) {
-        if (mostrarOnline.checked) {
-          statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es) em português, incluindo Online/Natural.`;
-        } else {
-          statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es) locais em português.`;
-        }
-      } else {
-        listaFinal = vozesDisponiveis;
-        statusBox.textContent = "Nenhuma voz em português encontrada. Exibindo todas as vozes disponíveis.";
+      if (listaFinal.length === 0) {
+        listaFinal = vozesPortugues.length > 0 ? vozesPortugues : vozesDisponiveis;
       }
 
       if (listaFinal.length === 0) {
@@ -241,6 +326,7 @@
         option.textContent = "Nenhuma voz encontrada";
         option.value = "";
         seletor.appendChild(option);
+        statusBox.textContent = "Nenhuma voz foi carregada pelo navegador.";
         return;
       }
 
@@ -248,17 +334,45 @@
         const option = document.createElement("option");
         option.value = voz.voiceURI;
 
-        let marcador = "";
+        let marcador = ehVozOnlineOuNatural(voz)
+          ? "[Online/Natural]"
+          : "[Local]";
 
-        if (ehVozOnlineOuNatural(voz)) {
-          marcador = " [Online/Natural]";
-        } else {
-          marcador = " [Local]";
-        }
-
-        option.textContent = `${voz.name} (${voz.lang})${marcador}`;
+        option.textContent = `${voz.name} (${voz.lang}) ${marcador}`;
         seletor.appendChild(option);
       });
+
+      definirVozPadrao(listaFinal);
+
+      if (mostrarTodasAsVozes) {
+        statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es). Modo: todas as vozes.`;
+      } else {
+        statusBox.textContent = `Modo principal: Antônio, Francisca, Daniel e Maria.`;
+      }
+    }
+
+    function definirVozPadrao(listaFinal) {
+      const vozAntonio = listaFinal.find(ehVozAntonio);
+      const vozFrancisca = listaFinal.find(ehVozFrancisca);
+
+      if (vozAntonio) {
+        seletor.value = vozAntonio.voiceURI;
+        return;
+      }
+
+      if (vozFrancisca) {
+        seletor.value = vozFrancisca.voiceURI;
+        return;
+      }
+
+      if (listaFinal.length > 0) {
+        seletor.value = listaFinal[0].voiceURI;
+      }
+    }
+
+    function alternarListaVozes() {
+      mostrarTodasAsVozes = !mostrarTodasAsVozes;
+      carregarVozes();
     }
 
     function obterVozSelecionada() {
@@ -267,18 +381,115 @@
       return vozesDisponiveis.find(voz => voz.voiceURI === voiceURI) || null;
     }
 
+    function obterVelocidade() {
+      let valor = parseFloat(velocidade.value);
+
+      if (isNaN(valor)) {
+        valor = 1.0;
+      }
+
+      if (valor < 0.6) {
+        valor = 0.6;
+      }
+
+      if (valor > 1.8) {
+        valor = 1.8;
+      }
+
+      velocidade.value = valor.toFixed(1);
+
+      return valor;
+    }
+
+    function dividirEmFrases(texto) {
+      const regex = /[^.!?;:]+[.!?;:]?|[^.!?;:]+$/g;
+      const resultado = texto.match(regex);
+
+      if (!resultado) {
+        return [texto];
+      }
+
+      return resultado
+        .map(frase => frase.trim())
+        .filter(frase => frase.length > 0);
+    }
+
+    function escaparHTML(texto) {
+      return texto
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function renderizarTextoComMarcacao(indiceFrase) {
+      if (!frasesLeitura || frasesLeitura.length === 0) {
+        return;
+      }
+
+      let html = "";
+
+      frasesLeitura.forEach((frase, index) => {
+        const fraseSegura = escaparHTML(frase);
+
+        if (index === indiceFrase) {
+          html += `<span class="frase-marcada">${fraseSegura}</span> `;
+        } else {
+          html += `${fraseSegura} `;
+        }
+      });
+
+      caixaTexto.innerHTML = html.trim();
+
+      const marcada = caixaTexto.querySelector(".frase-marcada");
+
+      if (marcada) {
+        marcada.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
+    }
+
+    function localizarFrasePorCaracter(charIndex) {
+      let acumulado = 0;
+
+      for (let i = 0; i < frasesLeitura.length; i++) {
+        const tamanho = frasesLeitura[i].length + 1;
+
+        if (charIndex >= acumulado && charIndex < acumulado + tamanho) {
+          return i;
+        }
+
+        acumulado += tamanho;
+      }
+
+      return -1;
+    }
+
+    function atualizarLendoAgora(indiceFrase) {
+      if (indiceFrase < 0 || indiceFrase >= frasesLeitura.length) {
+        lendoAgora.innerHTML = "<strong>Lendo agora:</strong> —";
+        return;
+      }
+
+      lendoAgora.innerHTML = `<strong>Lendo agora:</strong> ${escaparHTML(frasesLeitura[indiceFrase])}`;
+    }
+
     function falar(texto) {
       if (!texto.trim()) {
         alert("Não há texto para leitura.");
         return;
       }
 
-      speechSynthesis.cancel();
+      pararTexto(false);
 
-      const fala = new SpeechSynthesisUtterance(texto);
+      textoOriginalLeitura = texto.trim();
+      frasesLeitura = dividirEmFrases(textoOriginalLeitura);
+
+      const fala = new SpeechSynthesisUtterance(textoOriginalLeitura);
       const vozSelecionada = obterVozSelecionada();
 
-      fala.rate = Number(velocidade.value);
+      fala.rate = obterVelocidade();
       fala.pitch = 1;
       fala.volume = 1;
       fala.lang = "pt-BR";
@@ -286,31 +497,47 @@
       if (vozSelecionada) {
         fala.voice = vozSelecionada;
         fala.lang = vozSelecionada.lang;
-
-        if (ehVozOnlineOuNatural(vozSelecionada)) {
-          statusBox.textContent = `Tentando ler com voz Online/Natural: ${vozSelecionada.name}`;
-        } else {
-          statusBox.textContent = `Tentando ler com voz local: ${vozSelecionada.name}`;
-        }
+        statusBox.textContent = `Preparando leitura com: ${vozSelecionada.name}`;
       } else {
-        statusBox.textContent = "Lendo com a voz padrão do navegador.";
+        statusBox.textContent = "Preparando leitura com a voz padrão do navegador.";
       }
 
       fala.onstart = function () {
         if (vozSelecionada) {
           statusBox.textContent = `Lendo com: ${vozSelecionada.name} (${vozSelecionada.lang})`;
+        } else {
+          statusBox.textContent = "Lendo com a voz padrão do navegador.";
+        }
+
+        renderizarTextoComMarcacao(0);
+        atualizarLendoAgora(0);
+      };
+
+      fala.onboundary = function (event) {
+        if (typeof event.charIndex !== "number") {
+          return;
+        }
+
+        const indiceFrase = localizarFrasePorCaracter(event.charIndex);
+
+        if (indiceFrase >= 0) {
+          renderizarTextoComMarcacao(indiceFrase);
+          atualizarLendoAgora(indiceFrase);
         }
       };
 
       fala.onerror = function (event) {
-        statusBox.textContent = "Erro na leitura. Tente uma voz local/offline.";
+        statusBox.textContent = "Erro na leitura. Tente outra voz, preferencialmente local.";
         console.error("Erro SpeechSynthesis:", event);
       };
 
       fala.onend = function () {
         statusBox.textContent = "Leitura concluída.";
+        lendoAgora.innerHTML = "<strong>Lendo agora:</strong> —";
+        caixaTexto.innerText = textoOriginalLeitura;
       };
 
+      leituraEmAndamento = fala;
       speechSynthesis.speak(fala);
     }
 
@@ -337,16 +564,64 @@
       }
     }
 
-    function pararTexto() {
+    function pararTexto(restaurarTexto = true) {
       speechSynthesis.cancel();
+
+      if (restaurarTexto && textoOriginalLeitura) {
+        caixaTexto.innerText = textoOriginalLeitura;
+      }
+
+      lendoAgora.innerHTML = "<strong>Lendo agora:</strong> —";
       statusBox.textContent = "Leitura parada.";
     }
 
     function limparTexto() {
-      pararTexto();
+      pararTexto(false);
+      textoOriginalLeitura = "";
+      frasesLeitura = [];
       caixaTexto.innerText = "";
       caixaTexto.focus();
       statusBox.textContent = "Texto limpo.";
+    }
+
+    function normalizarTexto() {
+      pararTexto(false);
+
+      let texto = caixaTexto.innerText;
+
+      if (!texto.trim()) {
+        alert("Não há texto para normalizar.");
+        return;
+      }
+
+      texto = texto
+        // Normaliza quebras do Windows/Linux
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n")
+
+        // Marca parágrafos reais antes de mexer nas quebras
+        .replace(/\n{2,}/g, "###PARAGRAFO###")
+
+        // Transforma quebras simples em espaço
+        .replace(/\n/g, " ")
+
+        // Restaura parágrafos
+        .replace(/###PARAGRAFO###/g, "\n\n")
+
+        // Remove espaços duplicados
+        .replace(/[ \t]{2,}/g, " ")
+
+        // Corrige espaço antes de pontuação
+        .replace(/\s+([,.!?;:])/g, "$1")
+
+        // Garante espaço depois de pontuação, quando necessário
+        .replace(/([,.!?;:])([^\s\n])/g, "$1 $2")
+
+        // Limpa excesso nas bordas
+        .trim();
+
+      caixaTexto.innerText = texto;
+      statusBox.textContent = "Texto normalizado.";
     }
 
     speechSynthesis.onvoiceschanged = carregarVozes;
@@ -355,5 +630,6 @@
 
     setTimeout(carregarVozes, 1000);
   </script>
+
 </body>
 </html>
