@@ -5,6 +5,30 @@
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
 
+## [3.2] - 2026-04-30
+
+### ✨ Adicionado
+
+- Sistema de log interno
+- Botão para mostrar/ocultar log
+- Botão para baixar log em `.txt`
+
+### 🔧 Melhorado
+
+- Layout travado na tela
+- Header compacto
+- Remoção do quadro “Lendo agora”
+- Scroll restrito à caixa de texto
+- Marcador amarelo mantido diretamente no texto
+- Melhor acompanhamento da frase durante a leitura
+
+### 🧪 Diagnóstico
+
+- Registro de eventos de leitura
+- Registro de carregamento de vozes
+- Registro de erros da SpeechSynthesis
+- Registro de ações como pausar, continuar, parar e limpar texto
+
 
 \## \[3.1] - Em desenvolvimento
 

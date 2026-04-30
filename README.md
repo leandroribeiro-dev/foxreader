@@ -3,7 +3,7 @@
 Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando a API nativa do navegador (SpeechSynthesis).
 
 ## 📌 Versão
-**V3.1 (em desenvolvimento)**
+**V3.2**
 
 ---
 
@@ -35,6 +35,13 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 - Área de leitura com altura ajustada à tela
 - Rodapé informativo da aplicação
 - Melhor suporte a valores de velocidade com vírgula ou ponto
+- Layout estável com altura travada na tela
+- Scroll interno apenas na área de leitura
+- Remoção do quadro separado “Lendo agora”
+- Destaque da frase atual diretamente no texto
+- Sistema de log interno
+- Botão para mostrar/ocultar log
+- Botão para baixar log em `.txt`
 
 ---
 
