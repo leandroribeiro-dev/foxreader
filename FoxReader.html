@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.2</title>
+  <title>FoxReader V3.3</title>
 
   <style>
     * {
@@ -235,7 +235,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.2</h1>
+      <h1>FoxReader V3.3</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto para leitura em voz alta.
@@ -297,7 +297,7 @@
       <!-- Para usar imagem depois:
       <img src="img/raposinha.png" alt="FoxReader">
       -->
-      FoxReader V3.2 — HTML, CSS e JavaScript
+      FoxReader V3.3 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -578,13 +578,41 @@
     }
 
     function rolarDentroDaCaixa(elemento) {
-      const caixaAltura = caixaTexto.clientHeight;
-      const alvoTopo = elemento.offsetTop;
-      const alvoAltura = elemento.offsetHeight;
+      const margem = 90;
 
-      const novoScroll = alvoTopo - (caixaAltura / 2) + (alvoAltura / 2);
+      const caixaTopoVisivel = caixaTexto.scrollTop;
+      const caixaBaseVisivel = caixaTexto.scrollTop + caixaTexto.clientHeight;
 
-      caixaTexto.scrollTop = novoScroll;
+      const elementoTopo = elemento.offsetTop;
+      const elementoBase = elemento.offsetTop + elemento.offsetHeight;
+
+      // Se a frase já está visível com folga, não mexe no scroll.
+      if (
+        elementoTopo >= caixaTopoVisivel + margem &&
+        elementoBase <= caixaBaseVisivel - margem
+      ) {
+        return;
+      }
+
+      // Se a frase está acima da área confortável, rola suavemente para cima.
+      if (elementoTopo < caixaTopoVisivel + margem) {
+        caixaTexto.scrollTo({
+          top: Math.max(elementoTopo - margem, 0),
+          behavior: "smooth"
+        });
+
+        return;
+      }
+
+      // Se a frase está abaixo da área confortável, rola suavemente para baixo.
+      if (elementoBase > caixaBaseVisivel - margem) {
+        caixaTexto.scrollTo({
+          top: elementoBase - caixaTexto.clientHeight + margem,
+          behavior: "smooth"
+        });
+
+        return;
+      }
     }
 
     function localizarFrasePorCaracter(charIndex) {
@@ -644,23 +672,38 @@
       };
 
       fala.onboundary = function (event) {
-        registrarLog(`Boundary detectado. charIndex=${event.charIndex}`);
-
         if (typeof event.charIndex !== "number") {
           return;
         }
 
         const indiceFrase = localizarFrasePorCaracter(event.charIndex);
 
-        if (indiceFrase >= 0) {
+        // Só atualiza quando realmente mudar de frase.
+        if (indiceFrase >= 0 && indiceFrase !== indiceFraseAtual) {
           registrarLog(`Frase atual: ${indiceFrase + 1}/${frasesLeitura.length}`);
           renderizarTextoComMarcacao(indiceFrase);
         }
       };
 
       fala.onerror = function (event) {
-        atualizarStatus(`Erro na leitura: ${event.error || "erro não especificado"}. Tente outra voz.`);
-        registrarLog(`ERRO SpeechSynthesis: ${JSON.stringify(event)}`);
+        const erro = event.error || "erro não especificado";
+        const vozSelecionada = obterVozSelecionada();
+
+        if (erro === "synthesis-failed") {
+          atualizarStatus("A voz selecionada falhou durante a leitura. Tente Maria, Daniel ou reduza a velocidade.");
+        } else if (erro === "interrupted") {
+          atualizarStatus("Leitura interrompida.");
+        } else if (erro === "canceled") {
+          atualizarStatus("Leitura cancelada.");
+        } else {
+          atualizarStatus(`Erro na leitura: ${erro}.`);
+        }
+
+        if (vozSelecionada) {
+          registrarLog(`ERRO SpeechSynthesis: ${erro} | Voz: ${vozSelecionada.name} (${vozSelecionada.lang})`);
+        } else {
+          registrarLog(`ERRO SpeechSynthesis: ${erro} | Voz padrão do navegador`);
+        }
       };
 
       fala.onend = function () {
@@ -784,7 +827,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.2 iniciado.");
+    registrarLog("FoxReader V3.3 iniciado.");
 
     carregarVozes();
 

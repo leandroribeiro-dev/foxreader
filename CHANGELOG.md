@@ -1,5 +1,21 @@
 \# 📜 CHANGELOG
 
+## [3.3] - 2026-04-30
+
+### 🔧 Melhorado
+- Scroll interno mais suave e controlado
+- Redução de reposicionamento desnecessário
+- Atualização de frase apenas quando muda
+
+### 🧪 Diagnóstico
+- Log mais limpo (menos ruído de boundary)
+- Registro detalhado de erros por voz
+
+### ⚠️ Tratamento
+- Mensagens específicas para falha de voz
+- Melhor feedback ao usuário
+
+---
 
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
@@ -29,6 +45,7 @@ Todas as mudanças relevantes do projeto serão registradas aqui.
 - Registro de erros da SpeechSynthesis
 - Registro de ações como pausar, continuar, parar e limpar texto
 
+---
 
 \## \[3.1] - Em desenvolvimento
 
