@@ -93,12 +93,13 @@ Atualizar versão → **V3.3**
 ---
 
 ## 📂 Estrutura
+``` cmd
 /
 ├── FoxReader.html
 ├── README.md
 ├── CHANGELOG.md
 └── legacy/
-
+```
 
 ---
 
