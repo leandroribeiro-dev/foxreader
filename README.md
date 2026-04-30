@@ -94,4 +94,4 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 ## 👤 Autor
 
-Leandro Ribeiro dos Santos
+Leandro Ribeiro
