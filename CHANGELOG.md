@@ -6,6 +6,38 @@ Todas as mudanças relevantes do projeto serão registradas aqui.
 
 
 
+\## \[3.1] - Em desenvolvimento
+
+
+
+\### ✨ Adicionado
+
+\- Carregamento de arquivos `.txt` e `.md`
+
+\- Cabeçalho fixo durante a leitura
+
+\- Rodapé informativo da aplicação
+
+\- Área de texto com rolagem interna
+
+
+
+\### 🔧 Melhorado
+
+\- Layout ajustado para melhor aproveitamento da tela
+
+\- Scroll da frase marcada dentro da própria caixa de texto
+
+\- Tratamento do campo de velocidade com vírgula ou ponto
+
+\- Mensagem ao tentar continuar leitura sem pausa ativa
+
+
+
+\---
+
+
+
 \## \[3.0] - Em desenvolvimento
 
 
@@ -33,6 +65,10 @@ Todas as mudanças relevantes do projeto serão registradas aqui.
 \- Controle e seleção de vozes
 
 \- Tratamento de texto antes da leitura
+
+
+
+\---
 
 
 
@@ -67,6 +103,10 @@ Todas as mudanças relevantes do projeto serão registradas aqui.
 \- Melhor organização dos controles
 
 \- Ajuste na experiência de entrada de texto
+
+
+
+\---
 
 
 

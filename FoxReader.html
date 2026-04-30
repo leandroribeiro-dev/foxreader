@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3</title>
+  <title>FoxReader V3.1</title>
 
   <style>
     * {
@@ -13,9 +13,9 @@
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       color: #222;
-      max-width: 1100px;
-      margin: 20px auto;
-      padding: 16px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 12px;
       line-height: 1.6;
     }
 
@@ -23,30 +23,34 @@
       background: #ffffff;
       border: 1px solid #d0d0d0;
       border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 16px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 8px;
+      z-index: 10;
     }
 
     h1 {
       text-align: center;
-      margin: 0 0 6px 0;
-      font-size: 32px;
+      margin: 0;
+      font-size: 30px;
+      line-height: 1.2;
     }
 
     .subtitulo {
       text-align: center;
       color: #555;
-      margin: 0 0 16px 0;
-      font-size: 15px;
+      margin: 4px 0 10px 0;
+      font-size: 14px;
     }
 
     .linha-controles {
       display: grid;
-      grid-template-columns: 1fr auto auto;
+      grid-template-columns: 1fr 150px 120px 210px;
       gap: 10px;
       align-items: end;
-      margin-bottom: 14px;
+      margin-bottom: 10px;
     }
 
     label {
@@ -55,33 +59,30 @@
     }
 
     select,
-    input[type="number"] {
+    input[type="number"],
+    input[type="file"] {
       width: 100%;
-      padding: 8px;
-      font-size: 15px;
+      padding: 7px;
+      font-size: 14px;
       border: 1px solid #999;
       border-radius: 5px;
       background: white;
     }
 
-    .velocidade-box {
-      width: 125px;
-    }
-
     .botoes {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
     }
 
     button {
-      padding: 9px 16px;
+      padding: 8px 14px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 15px;
+      font-size: 14px;
       background: #1f6feb;
       color: white;
     }
@@ -118,23 +119,28 @@
 
     .status {
       text-align: center;
-      font-size: 14px;
+      font-size: 13px;
       color: #555;
-      margin-top: 6px;
+      margin-top: 2px;
     }
 
     .lendo-agora {
       background: #fffbe6;
       border: 1px solid #e0c84f;
       border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      font-size: 15px;
-      min-height: 46px;
+      padding: 8px 12px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      min-height: 40px;
     }
 
     .lendo-agora strong {
       color: #333;
+    }
+
+    main {
+      display: flex;
+      flex-direction: column;
     }
 
     .box {
@@ -142,10 +148,12 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 20px;
-      min-height: 380px;
+      height: calc(100vh - 285px);
+      min-height: 340px;
       font-size: 18px;
       outline: none;
       white-space: pre-wrap;
+      overflow-y: auto;
       box-shadow: 0 2px 6px rgba(0,0,0,0.06);
     }
 
@@ -161,17 +169,31 @@
       padding: 2px 3px;
     }
 
-    @media (max-width: 800px) {
+    footer {
+      margin-top: 10px;
+      padding: 8px;
+      text-align: center;
+      color: #666;
+      font-size: 12px;
+    }
+
+    footer img {
+      max-height: 32px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @media (max-width: 950px) {
       .linha-controles {
         grid-template-columns: 1fr;
       }
 
-      .velocidade-box {
+      button {
         width: 100%;
       }
 
-      button {
-        width: 100%;
+      .box {
+        height: calc(100vh - 430px);
       }
     }
   </style>
@@ -180,10 +202,10 @@
 <body>
 
   <header>
-    <h1>FoxReader V3</h1>
+    <h1>FoxReader V3.1</h1>
 
     <p class="subtitulo">
-      Cole seu texto, escolha uma voz e use os controles de leitura.
+      Cole, carregue ou normalize um texto para leitura em voz alta.
     </p>
 
     <div class="linha-controles">
@@ -198,9 +220,14 @@
         Mostrar todas
       </button>
 
-      <label class="velocidade-box">
+      <label>
         Velocidade:
         <input id="velocidade" type="number" min="0.6" max="1.8" step="0.1" value="1.0">
+      </label>
+
+      <label>
+        Arquivo TXT/MD:
+        <input id="arquivoTexto" type="file" accept=".txt,.md,text/plain,text/markdown" onchange="carregarArquivoTexto(event)">
       </label>
     </div>
 
@@ -220,16 +247,25 @@
     </div>
   </header>
 
-  <div id="lendoAgora" class="lendo-agora">
-    <strong>Lendo agora:</strong> —
-  </div>
+  <main>
+    <div id="lendoAgora" class="lendo-agora">
+      <strong>Lendo agora:</strong> —
+    </div>
 
-  <div
-    id="caixaTexto"
-    class="box"
-    contenteditable="true"
-    data-placeholder="Cole seu texto aqui..."
-  ></div>
+    <div
+      id="caixaTexto"
+      class="box"
+      contenteditable="true"
+      data-placeholder="Cole seu texto aqui..."
+    ></div>
+  </main>
+
+  <footer>
+    <!-- Se quiser usar imagem depois:
+    <img src="img/raposinha.png" alt="FoxReader">
+    -->
+    FoxReader V3.1 — Leitor local em HTML, CSS e JavaScript
+  </footer>
 
   <script>
     let vozesDisponiveis = [];
@@ -265,13 +301,11 @@
     }
 
     function ehVozAntonio(voz) {
-      const nome = normalizarNome(voz.name);
-      return nome.includes("antonio");
+      return normalizarNome(voz.name).includes("antonio");
     }
 
     function ehVozFrancisca(voz) {
-      const nome = normalizarNome(voz.name);
-      return nome.includes("francisca");
+      return normalizarNome(voz.name).includes("francisca");
     }
 
     function ehVozOnlineOuNatural(voz) {
@@ -334,7 +368,7 @@
         const option = document.createElement("option");
         option.value = voz.voiceURI;
 
-        let marcador = ehVozOnlineOuNatural(voz)
+        const marcador = ehVozOnlineOuNatural(voz)
           ? "[Online/Natural]"
           : "[Local]";
 
@@ -347,7 +381,7 @@
       if (mostrarTodasAsVozes) {
         statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es). Modo: todas as vozes.`;
       } else {
-        statusBox.textContent = `Modo principal: Antônio, Francisca, Daniel e Maria.`;
+        statusBox.textContent = "Modo principal: Antônio, Francisca, Daniel e Maria.";
       }
     }
 
@@ -382,7 +416,7 @@
     }
 
     function obterVelocidade() {
-      let valor = parseFloat(velocidade.value);
+      let valor = parseFloat(String(velocidade.value).replace(",", "."));
 
       if (isNaN(valor)) {
         valor = 1.0;
@@ -443,11 +477,16 @@
       const marcada = caixaTexto.querySelector(".frase-marcada");
 
       if (marcada) {
-        marcada.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
+        rolarDentroDaCaixa(marcada);
       }
+    }
+
+    function rolarDentroDaCaixa(elemento) {
+      const caixaAltura = caixaTexto.clientHeight;
+      const alvoTopo = elemento.offsetTop;
+      const alvoAltura = elemento.offsetHeight;
+
+      caixaTexto.scrollTop = alvoTopo - (caixaAltura / 2) + (alvoAltura / 2);
     }
 
     function localizarFrasePorCaracter(charIndex) {
@@ -561,6 +600,8 @@
       if (speechSynthesis.paused) {
         speechSynthesis.resume();
         statusBox.textContent = "Leitura retomada.";
+      } else {
+        statusBox.textContent = "Não há leitura pausada para continuar.";
       }
     }
 
@@ -595,33 +636,52 @@
       }
 
       texto = texto
-        // Normaliza quebras do Windows/Linux
         .replace(/\r\n/g, "\n")
         .replace(/\r/g, "\n")
-
-        // Marca parágrafos reais antes de mexer nas quebras
         .replace(/\n{2,}/g, "###PARAGRAFO###")
-
-        // Transforma quebras simples em espaço
         .replace(/\n/g, " ")
-
-        // Restaura parágrafos
         .replace(/###PARAGRAFO###/g, "\n\n")
-
-        // Remove espaços duplicados
         .replace(/[ \t]{2,}/g, " ")
-
-        // Corrige espaço antes de pontuação
         .replace(/\s+([,.!?;:])/g, "$1")
-
-        // Garante espaço depois de pontuação, quando necessário
         .replace(/([,.!?;:])([^\s\n])/g, "$1 $2")
-
-        // Limpa excesso nas bordas
         .trim();
 
       caixaTexto.innerText = texto;
       statusBox.textContent = "Texto normalizado.";
+    }
+
+    function carregarArquivoTexto(event) {
+      const arquivo = event.target.files[0];
+
+      if (!arquivo) {
+        return;
+      }
+
+      const nome = arquivo.name.toLowerCase();
+
+      if (!nome.endsWith(".txt") && !nome.endsWith(".md")) {
+        alert("Formato não recomendado. Use arquivos .txt ou .md nesta versão.");
+        event.target.value = "";
+        return;
+      }
+
+      const leitor = new FileReader();
+
+      leitor.onload = function(e) {
+        pararTexto(false);
+
+        caixaTexto.innerText = e.target.result;
+        textoOriginalLeitura = "";
+        frasesLeitura = [];
+
+        statusBox.textContent = `Arquivo carregado: ${arquivo.name}`;
+      };
+
+      leitor.onerror = function() {
+        statusBox.textContent = "Erro ao carregar o arquivo.";
+      };
+
+      leitor.readAsText(arquivo, "UTF-8");
     }
 
     speechSynthesis.onvoiceschanged = carregarVozes;
