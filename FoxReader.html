@@ -2,59 +2,70 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.1</title>
+  <title>FoxReader V3.2</title>
 
   <style>
     * {
       box-sizing: border-box;
     }
 
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f4f4f4;
       color: #222;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 12px;
       line-height: 1.6;
+    }
+
+    .app {
+      height: 100vh;
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     header {
       background: #ffffff;
       border: 1px solid #d0d0d0;
       border-radius: 10px;
-      padding: 12px 16px;
-      margin-bottom: 10px;
+      padding: 10px 14px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-      position: sticky;
-      top: 8px;
-      z-index: 10;
+      flex-shrink: 0;
     }
 
     h1 {
       text-align: center;
       margin: 0;
-      font-size: 30px;
-      line-height: 1.2;
+      font-size: 28px;
+      line-height: 1.1;
     }
 
     .subtitulo {
       text-align: center;
       color: #555;
-      margin: 4px 0 10px 0;
-      font-size: 14px;
+      margin: 3px 0 8px 0;
+      font-size: 13px;
     }
 
     .linha-controles {
       display: grid;
-      grid-template-columns: 1fr 150px 120px 210px;
-      gap: 10px;
+      grid-template-columns: 1fr 145px 115px 210px;
+      gap: 8px;
       align-items: end;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     label {
-      font-size: 14px;
+      font-size: 13px;
       color: #222;
     }
 
@@ -62,7 +73,7 @@
     input[type="number"],
     input[type="file"] {
       width: 100%;
-      padding: 7px;
+      padding: 6px;
       font-size: 14px;
       border: 1px solid #999;
       border-radius: 5px;
@@ -71,14 +82,14 @@
 
     .botoes {
       display: flex;
-      gap: 8px;
+      gap: 7px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     button {
-      padding: 8px 14px;
+      padding: 7px 12px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -100,12 +111,14 @@
     }
 
     button.clear,
-    button.adjust {
+    button.adjust,
+    button.log {
       background: #555;
     }
 
     button.clear:hover,
-    button.adjust:hover {
+    button.adjust:hover,
+    button.log:hover {
       background: #333;
     }
 
@@ -121,36 +134,25 @@
       text-align: center;
       font-size: 13px;
       color: #555;
-      margin-top: 2px;
-    }
-
-    .lendo-agora {
-      background: #fffbe6;
-      border: 1px solid #e0c84f;
-      border-radius: 8px;
-      padding: 8px 12px;
-      margin-bottom: 10px;
-      font-size: 14px;
-      min-height: 40px;
-    }
-
-    .lendo-agora strong {
-      color: #333;
+      min-height: 18px;
     }
 
     main {
+      flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
+      gap: 8px;
     }
 
     .box {
+      flex: 1;
+      min-height: 0;
       background: white;
       border: 1px solid #ccc;
       border-radius: 8px;
       padding: 20px;
-      height: calc(100vh - 285px);
-      min-height: 340px;
-      font-size: 18px;
+      font-size: 20px;
       outline: none;
       white-space: pre-wrap;
       overflow-y: auto;
@@ -169,21 +171,50 @@
       padding: 2px 3px;
     }
 
+    .painel-log {
+      display: none;
+      height: 150px;
+      flex-shrink: 0;
+      background: #111;
+      color: #ddd;
+      border-radius: 8px;
+      border: 1px solid #333;
+      padding: 10px;
+      overflow-y: auto;
+      font-family: Consolas, monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+
     footer {
-      margin-top: 10px;
-      padding: 8px;
+      flex-shrink: 0;
       text-align: center;
       color: #666;
       font-size: 12px;
+      padding: 4px;
     }
 
     footer img {
-      max-height: 32px;
+      max-height: 28px;
       vertical-align: middle;
       margin-right: 8px;
     }
 
     @media (max-width: 950px) {
+      html,
+      body {
+        overflow: auto;
+      }
+
+      body {
+        height: auto;
+      }
+
+      .app {
+        height: auto;
+        min-height: 100vh;
+      }
+
       .linha-controles {
         grid-template-columns: 1fr;
       }
@@ -193,7 +224,7 @@
       }
 
       .box {
-        height: calc(100vh - 430px);
+        min-height: 420px;
       }
     }
   </style>
@@ -201,71 +232,75 @@
 
 <body>
 
-  <header>
-    <h1>FoxReader V3.1</h1>
+  <div class="app">
 
-    <p class="subtitulo">
-      Cole, carregue ou normalize um texto para leitura em voz alta.
-    </p>
+    <header>
+      <h1>FoxReader V3.2</h1>
 
-    <div class="linha-controles">
-      <label>
-        Voz:
-        <select id="seletorVoz">
-          <option>Carregando vozes...</option>
-        </select>
-      </label>
+      <p class="subtitulo">
+        Cole, carregue ou normalize um texto para leitura em voz alta.
+      </p>
 
-      <button id="btnAlternarVozes" class="secondary" onclick="alternarListaVozes()">
-        Mostrar todas
-      </button>
+      <div class="linha-controles">
+        <label>
+          Voz:
+          <select id="seletorVoz">
+            <option>Carregando vozes...</option>
+          </select>
+        </label>
 
-      <label>
-        Velocidade:
-        <input id="velocidade" type="number" min="0.6" max="1.8" step="0.1" value="1.0">
-      </label>
+        <button id="btnAlternarVozes" class="secondary" onclick="alternarListaVozes()">
+          Mostrar todas
+        </button>
 
-      <label>
-        Arquivo TXT/MD:
-        <input id="arquivoTexto" type="file" accept=".txt,.md,text/plain,text/markdown" onchange="carregarArquivoTexto(event)">
-      </label>
-    </div>
+        <label>
+          Velocidade:
+          <input id="velocidade" type="number" min="0.6" max="1.8" step="0.1" value="1.0">
+        </label>
 
-    <div class="botoes">
-      <button onclick="testarVoz()">Testar voz</button>
-      <button onclick="lerTexto()">Ler texto</button>
-      <button onclick="pausarTexto()">Pausar</button>
-      <button onclick="continuarTexto()">Continuar</button>
-      <button class="stop" onclick="pararTexto()">Parar</button>
-      <button class="clear" onclick="limparTexto()">Limpar texto</button>
-      <button class="adjust" onclick="normalizarTexto()">Normalizar texto</button>
-      <button onclick="carregarVozes()">Recarregar vozes</button>
-    </div>
+        <label>
+          Arquivo TXT/MD:
+          <input id="arquivoTexto" type="file" accept=".txt,.md,text/plain,text/markdown" onchange="carregarArquivoTexto(event)">
+        </label>
+      </div>
 
-    <div id="status" class="status">
-      Aguardando carregamento das vozes.
-    </div>
-  </header>
+      <div class="botoes">
+        <button onclick="testarVoz()">Testar voz</button>
+        <button onclick="lerTexto()">Ler texto</button>
+        <button onclick="pausarTexto()">Pausar</button>
+        <button onclick="continuarTexto()">Continuar</button>
+        <button class="stop" onclick="pararTexto()">Parar</button>
+        <button class="clear" onclick="limparTexto()">Limpar texto</button>
+        <button class="adjust" onclick="normalizarTexto()">Normalizar texto</button>
+        <button onclick="carregarVozes()">Recarregar vozes</button>
+        <button class="log" onclick="alternarLog()">Mostrar log</button>
+        <button class="log" onclick="baixarLog()">Baixar log</button>
+      </div>
 
-  <main>
-    <div id="lendoAgora" class="lendo-agora">
-      <strong>Lendo agora:</strong> —
-    </div>
+      <div id="status" class="status">
+        Aguardando carregamento das vozes.
+      </div>
+    </header>
 
-    <div
-      id="caixaTexto"
-      class="box"
-      contenteditable="true"
-      data-placeholder="Cole seu texto aqui..."
-    ></div>
-  </main>
+    <main>
+      <div
+        id="caixaTexto"
+        class="box"
+        contenteditable="true"
+        data-placeholder="Cole seu texto aqui..."
+      ></div>
 
-  <footer>
-    <!-- Se quiser usar imagem depois:
-    <img src="img/raposinha.png" alt="FoxReader">
-    -->
-    FoxReader V3.1 — Leitor local em HTML, CSS e JavaScript
-  </footer>
+      <div id="painelLog" class="painel-log"></div>
+    </main>
+
+    <footer>
+      <!-- Para usar imagem depois:
+      <img src="img/raposinha.png" alt="FoxReader">
+      -->
+      FoxReader V3.2 — HTML, CSS e JavaScript
+    </footer>
+
+  </div>
 
   <script>
     let vozesDisponiveis = [];
@@ -274,13 +309,65 @@
     let textoOriginalLeitura = "";
     let frasesLeitura = [];
     let leituraEmAndamento = null;
+    let indiceFraseAtual = -1;
+
+    let registrosLog = [];
 
     const seletor = document.getElementById("seletorVoz");
     const statusBox = document.getElementById("status");
     const velocidade = document.getElementById("velocidade");
     const caixaTexto = document.getElementById("caixaTexto");
-    const lendoAgora = document.getElementById("lendoAgora");
     const btnAlternarVozes = document.getElementById("btnAlternarVozes");
+    const painelLog = document.getElementById("painelLog");
+
+    function registrarLog(mensagem) {
+      const agora = new Date();
+      const hora = agora.toLocaleTimeString("pt-BR");
+      const linha = `[${hora}] ${mensagem}`;
+
+      registrosLog.push(linha);
+
+      painelLog.textContent = registrosLog.join("\n");
+      painelLog.scrollTop = painelLog.scrollHeight;
+
+      console.log(linha);
+    }
+
+    function alternarLog() {
+      if (painelLog.style.display === "block") {
+        painelLog.style.display = "none";
+        registrarLog("Painel de log ocultado.");
+      } else {
+        painelLog.style.display = "block";
+        registrarLog("Painel de log exibido.");
+      }
+    }
+
+    function baixarLog() {
+      const conteudo = registrosLog.join("\n");
+
+      if (!conteudo.trim()) {
+        alert("Não há registros de log para baixar.");
+        return;
+      }
+
+      const blob = new Blob([conteudo], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "FoxReader_Log.txt";
+      link.click();
+
+      URL.revokeObjectURL(url);
+
+      registrarLog("Log baixado em arquivo TXT.");
+    }
+
+    function atualizarStatus(mensagem) {
+      statusBox.textContent = mensagem;
+      registrarLog(mensagem);
+    }
 
     function normalizarNome(texto) {
       return texto
@@ -360,7 +447,7 @@
         option.textContent = "Nenhuma voz encontrada";
         option.value = "";
         seletor.appendChild(option);
-        statusBox.textContent = "Nenhuma voz foi carregada pelo navegador.";
+        atualizarStatus("Nenhuma voz foi carregada pelo navegador.");
         return;
       }
 
@@ -379,9 +466,9 @@
       definirVozPadrao(listaFinal);
 
       if (mostrarTodasAsVozes) {
-        statusBox.textContent = `Foram encontradas ${listaFinal.length} voz(es). Modo: todas as vozes.`;
+        atualizarStatus(`Foram encontradas ${listaFinal.length} voz(es). Modo: todas as vozes.`);
       } else {
-        statusBox.textContent = "Modo principal: Antônio, Francisca, Daniel e Maria.";
+        atualizarStatus("Modo principal: Antônio, Francisca, Daniel e Maria.");
       }
     }
 
@@ -391,16 +478,19 @@
 
       if (vozAntonio) {
         seletor.value = vozAntonio.voiceURI;
+        registrarLog(`Voz padrão selecionada: ${vozAntonio.name}`);
         return;
       }
 
       if (vozFrancisca) {
         seletor.value = vozFrancisca.voiceURI;
+        registrarLog(`Voz padrão selecionada: ${vozFrancisca.name}`);
         return;
       }
 
       if (listaFinal.length > 0) {
         seletor.value = listaFinal[0].voiceURI;
+        registrarLog(`Voz padrão selecionada: ${listaFinal[0].name}`);
       }
     }
 
@@ -460,6 +550,12 @@
         return;
       }
 
+      if (indiceFrase === indiceFraseAtual) {
+        return;
+      }
+
+      indiceFraseAtual = indiceFrase;
+
       let html = "";
 
       frasesLeitura.forEach((frase, index) => {
@@ -486,7 +582,9 @@
       const alvoTopo = elemento.offsetTop;
       const alvoAltura = elemento.offsetHeight;
 
-      caixaTexto.scrollTop = alvoTopo - (caixaAltura / 2) + (alvoAltura / 2);
+      const novoScroll = alvoTopo - (caixaAltura / 2) + (alvoAltura / 2);
+
+      caixaTexto.scrollTop = novoScroll;
     }
 
     function localizarFrasePorCaracter(charIndex) {
@@ -505,15 +603,6 @@
       return -1;
     }
 
-    function atualizarLendoAgora(indiceFrase) {
-      if (indiceFrase < 0 || indiceFrase >= frasesLeitura.length) {
-        lendoAgora.innerHTML = "<strong>Lendo agora:</strong> —";
-        return;
-      }
-
-      lendoAgora.innerHTML = `<strong>Lendo agora:</strong> ${escaparHTML(frasesLeitura[indiceFrase])}`;
-    }
-
     function falar(texto) {
       if (!texto.trim()) {
         alert("Não há texto para leitura.");
@@ -524,6 +613,9 @@
 
       textoOriginalLeitura = texto.trim();
       frasesLeitura = dividirEmFrases(textoOriginalLeitura);
+      indiceFraseAtual = -1;
+
+      registrarLog(`Texto preparado. Total de frases detectadas: ${frasesLeitura.length}`);
 
       const fala = new SpeechSynthesisUtterance(textoOriginalLeitura);
       const vozSelecionada = obterVozSelecionada();
@@ -536,23 +628,24 @@
       if (vozSelecionada) {
         fala.voice = vozSelecionada;
         fala.lang = vozSelecionada.lang;
-        statusBox.textContent = `Preparando leitura com: ${vozSelecionada.name}`;
+        atualizarStatus(`Preparando leitura com: ${vozSelecionada.name}`);
       } else {
-        statusBox.textContent = "Preparando leitura com a voz padrão do navegador.";
+        atualizarStatus("Preparando leitura com a voz padrão do navegador.");
       }
 
       fala.onstart = function () {
         if (vozSelecionada) {
-          statusBox.textContent = `Lendo com: ${vozSelecionada.name} (${vozSelecionada.lang})`;
+          atualizarStatus(`Lendo com: ${vozSelecionada.name} (${vozSelecionada.lang})`);
         } else {
-          statusBox.textContent = "Lendo com a voz padrão do navegador.";
+          atualizarStatus("Lendo com a voz padrão do navegador.");
         }
 
         renderizarTextoComMarcacao(0);
-        atualizarLendoAgora(0);
       };
 
       fala.onboundary = function (event) {
+        registrarLog(`Boundary detectado. charIndex=${event.charIndex}`);
+
         if (typeof event.charIndex !== "number") {
           return;
         }
@@ -560,20 +653,20 @@
         const indiceFrase = localizarFrasePorCaracter(event.charIndex);
 
         if (indiceFrase >= 0) {
+          registrarLog(`Frase atual: ${indiceFrase + 1}/${frasesLeitura.length}`);
           renderizarTextoComMarcacao(indiceFrase);
-          atualizarLendoAgora(indiceFrase);
         }
       };
 
       fala.onerror = function (event) {
-        statusBox.textContent = "Erro na leitura. Tente outra voz, preferencialmente local.";
-        console.error("Erro SpeechSynthesis:", event);
+        atualizarStatus(`Erro na leitura: ${event.error || "erro não especificado"}. Tente outra voz.`);
+        registrarLog(`ERRO SpeechSynthesis: ${JSON.stringify(event)}`);
       };
 
       fala.onend = function () {
-        statusBox.textContent = "Leitura concluída.";
-        lendoAgora.innerHTML = "<strong>Lendo agora:</strong> —";
+        atualizarStatus("Leitura concluída.");
         caixaTexto.innerText = textoOriginalLeitura;
+        indiceFraseAtual = -1;
       };
 
       leituraEmAndamento = fala;
@@ -592,16 +685,18 @@
     function pausarTexto() {
       if (speechSynthesis.speaking && !speechSynthesis.paused) {
         speechSynthesis.pause();
-        statusBox.textContent = "Leitura pausada.";
+        atualizarStatus("Leitura pausada.");
+      } else {
+        atualizarStatus("Não há leitura ativa para pausar.");
       }
     }
 
     function continuarTexto() {
       if (speechSynthesis.paused) {
         speechSynthesis.resume();
-        statusBox.textContent = "Leitura retomada.";
+        atualizarStatus("Leitura retomada.");
       } else {
-        statusBox.textContent = "Não há leitura pausada para continuar.";
+        atualizarStatus("Não há leitura pausada para continuar.");
       }
     }
 
@@ -612,7 +707,8 @@
         caixaTexto.innerText = textoOriginalLeitura;
       }
 
-      lendoAgora.innerHTML = "<strong>Lendo agora:</strong> —";
+      indiceFraseAtual = -1;
+      registrarLog("Leitura parada/cancelada.");
       statusBox.textContent = "Leitura parada.";
     }
 
@@ -620,9 +716,10 @@
       pararTexto(false);
       textoOriginalLeitura = "";
       frasesLeitura = [];
+      indiceFraseAtual = -1;
       caixaTexto.innerText = "";
       caixaTexto.focus();
-      statusBox.textContent = "Texto limpo.";
+      atualizarStatus("Texto limpo.");
     }
 
     function normalizarTexto() {
@@ -647,7 +744,7 @@
         .trim();
 
       caixaTexto.innerText = texto;
-      statusBox.textContent = "Texto normalizado.";
+      atualizarStatus("Texto normalizado.");
     }
 
     function carregarArquivoTexto(event) {
@@ -673,18 +770,21 @@
         caixaTexto.innerText = e.target.result;
         textoOriginalLeitura = "";
         frasesLeitura = [];
+        indiceFraseAtual = -1;
 
-        statusBox.textContent = `Arquivo carregado: ${arquivo.name}`;
+        atualizarStatus(`Arquivo carregado: ${arquivo.name}`);
       };
 
       leitor.onerror = function() {
-        statusBox.textContent = "Erro ao carregar o arquivo.";
+        atualizarStatus("Erro ao carregar o arquivo.");
       };
 
       leitor.readAsText(arquivo, "UTF-8");
     }
 
     speechSynthesis.onvoiceschanged = carregarVozes;
+
+    registrarLog("FoxReader V3.2 iniciado.");
 
     carregarVozes();
 
