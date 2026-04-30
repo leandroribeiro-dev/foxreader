@@ -4,7 +4,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 ## 📌 Versão
 
-Atualizar versão → **V3.3**
+**V3.4**
 
 ---
 
@@ -46,6 +46,10 @@ Atualizar versão → **V3.3**
 - Scroll mais inteligente na leitura
 - Redução de atualizações desnecessárias
 - Melhor tratamento de erros de voz
+- Controle de acompanhamento visual da leitura (on/off)
+- Scroll com posicionamento mais estável
+- Monitoramento interno do estado da síntese de voz
+- Melhor tratamento de pausa e retomada
 
 ---
 

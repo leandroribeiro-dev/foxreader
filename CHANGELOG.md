@@ -1,5 +1,26 @@
 \# 📜 CHANGELOG
 
+## [3.4] - 2026-04-30
+
+### ✨ Adicionado
+- Controle de acompanhamento visual (ligar/desligar)
+- Botão “Acompanhar” com estado dinâmico
+
+### 🔧 Melhorado
+- Scroll mais estável com posição fixa de leitura
+- Melhor controle da posição da frase na tela
+- Ajuste fino na rolagem (menos oscilações)
+
+### 🧪 Diagnóstico
+- Registro detalhado do estado do SpeechSynthesis
+- Log de transições (start, pause, resume, end)
+- Monitoramento de speaking / paused / pending
+
+### ⚠️ Tratamento
+- Tentativa automática de retomada ao falhar resume
+- Feedback mais claro quando voz não suporta pausa
+
+---
 ## [3.3] - 2026-04-30
 
 ### 🔧 Melhorado

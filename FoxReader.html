@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.3</title>
+  <title>FoxReader V3.4</title>
 
   <style>
     * {
@@ -130,6 +130,22 @@
       background: #3030a0;
     }
 
+    button.track-on {
+      background: #198754;
+    }
+
+    button.track-on:hover {
+      background: #146c43;
+    }
+
+    button.track-off {
+      background: #6c757d;
+    }
+
+    button.track-off:hover {
+      background: #565e64;
+    }
+
     .status {
       text-align: center;
       font-size: 13px;
@@ -235,7 +251,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.3</h1>
+      <h1>FoxReader V3.4</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto para leitura em voz alta.
@@ -272,6 +288,7 @@
         <button class="stop" onclick="pararTexto()">Parar</button>
         <button class="clear" onclick="limparTexto()">Limpar texto</button>
         <button class="adjust" onclick="normalizarTexto()">Normalizar texto</button>
+        <button id="btnAcompanhar" class="track-on" onclick="alternarAcompanhamento()">Acompanhar: Ligado</button>
         <button onclick="carregarVozes()">Recarregar vozes</button>
         <button class="log" onclick="alternarLog()">Mostrar log</button>
         <button class="log" onclick="baixarLog()">Baixar log</button>
@@ -297,7 +314,7 @@
       <!-- Para usar imagem depois:
       <img src="img/raposinha.png" alt="FoxReader">
       -->
-      FoxReader V3.3 — HTML, CSS e JavaScript
+      FoxReader V3.4 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -305,6 +322,7 @@
   <script>
     let vozesDisponiveis = [];
     let mostrarTodasAsVozes = false;
+    let acompanharLeitura = true;
 
     let textoOriginalLeitura = "";
     let frasesLeitura = [];
@@ -318,6 +336,7 @@
     const velocidade = document.getElementById("velocidade");
     const caixaTexto = document.getElementById("caixaTexto");
     const btnAlternarVozes = document.getElementById("btnAlternarVozes");
+    const btnAcompanhar = document.getElementById("btnAcompanhar");
     const painelLog = document.getElementById("painelLog");
 
     function registrarLog(mensagem) {
@@ -367,6 +386,28 @@
     function atualizarStatus(mensagem) {
       statusBox.textContent = mensagem;
       registrarLog(mensagem);
+    }
+
+    function alternarAcompanhamento() {
+      acompanharLeitura = !acompanharLeitura;
+
+      if (acompanharLeitura) {
+        btnAcompanhar.textContent = "Acompanhar: Ligado";
+        btnAcompanhar.classList.remove("track-off");
+        btnAcompanhar.classList.add("track-on");
+        atualizarStatus("Acompanhamento visual ligado.");
+      } else {
+        btnAcompanhar.textContent = "Acompanhar: Desligado";
+        btnAcompanhar.classList.remove("track-on");
+        btnAcompanhar.classList.add("track-off");
+
+        if (textoOriginalLeitura) {
+          caixaTexto.innerText = textoOriginalLeitura;
+        }
+
+        indiceFraseAtual = -1;
+        atualizarStatus("Acompanhamento visual desligado.");
+      }
     }
 
     function normalizarNome(texto) {
@@ -501,7 +542,6 @@
 
     function obterVozSelecionada() {
       const voiceURI = seletor.value;
-
       return vozesDisponiveis.find(voz => voz.voiceURI === voiceURI) || null;
     }
 
@@ -546,6 +586,10 @@
     }
 
     function renderizarTextoComMarcacao(indiceFrase) {
+      if (!acompanharLeitura) {
+        return;
+      }
+
       if (!frasesLeitura || frasesLeitura.length === 0) {
         return;
       }
@@ -578,7 +622,8 @@
     }
 
     function rolarDentroDaCaixa(elemento) {
-      const margem = 90;
+      const posicaoDesejada = 105;
+      const margemInferior = 120;
 
       const caixaTopoVisivel = caixaTexto.scrollTop;
       const caixaBaseVisivel = caixaTexto.scrollTop + caixaTexto.clientHeight;
@@ -586,33 +631,30 @@
       const elementoTopo = elemento.offsetTop;
       const elementoBase = elemento.offsetTop + elemento.offsetHeight;
 
-      // Se a frase já está visível com folga, não mexe no scroll.
-      if (
-        elementoTopo >= caixaTopoVisivel + margem &&
-        elementoBase <= caixaBaseVisivel - margem
-      ) {
+      const maxScroll = caixaTexto.scrollHeight - caixaTexto.clientHeight;
+
+      const estaConfortavel =
+        elementoTopo >= caixaTopoVisivel + posicaoDesejada &&
+        elementoBase <= caixaBaseVisivel - margemInferior;
+
+      if (estaConfortavel) {
         return;
       }
 
-      // Se a frase está acima da área confortável, rola suavemente para cima.
-      if (elementoTopo < caixaTopoVisivel + margem) {
-        caixaTexto.scrollTo({
-          top: Math.max(elementoTopo - margem, 0),
-          behavior: "smooth"
-        });
+      let novoScroll = elementoTopo - posicaoDesejada;
 
-        return;
+      if (novoScroll < 0) {
+        novoScroll = 0;
       }
 
-      // Se a frase está abaixo da área confortável, rola suavemente para baixo.
-      if (elementoBase > caixaBaseVisivel - margem) {
-        caixaTexto.scrollTo({
-          top: elementoBase - caixaTexto.clientHeight + margem,
-          behavior: "smooth"
-        });
-
-        return;
+      if (novoScroll > maxScroll) {
+        novoScroll = maxScroll;
       }
+
+      caixaTexto.scrollTo({
+        top: novoScroll,
+        behavior: "smooth"
+      });
     }
 
     function localizarFrasePorCaracter(charIndex) {
@@ -631,6 +673,12 @@
       return -1;
     }
 
+    function registrarEstadoSintese(origem) {
+      registrarLog(
+        `${origem} | speaking=${speechSynthesis.speaking} | paused=${speechSynthesis.paused} | pending=${speechSynthesis.pending}`
+      );
+    }
+
     function falar(texto) {
       if (!texto.trim()) {
         alert("Não há texto para leitura.");
@@ -644,6 +692,7 @@
       indiceFraseAtual = -1;
 
       registrarLog(`Texto preparado. Total de frases detectadas: ${frasesLeitura.length}`);
+      registrarLog(`Acompanhamento visual: ${acompanharLeitura ? "ligado" : "desligado"}`);
 
       const fala = new SpeechSynthesisUtterance(textoOriginalLeitura);
       const vozSelecionada = obterVozSelecionada();
@@ -668,17 +717,24 @@
           atualizarStatus("Lendo com a voz padrão do navegador.");
         }
 
-        renderizarTextoComMarcacao(0);
+        registrarEstadoSintese("onstart");
+
+        if (acompanharLeitura) {
+          renderizarTextoComMarcacao(0);
+        }
       };
 
       fala.onboundary = function (event) {
+        if (!acompanharLeitura) {
+          return;
+        }
+
         if (typeof event.charIndex !== "number") {
           return;
         }
 
         const indiceFrase = localizarFrasePorCaracter(event.charIndex);
 
-        // Só atualiza quando realmente mudar de frase.
         if (indiceFrase >= 0 && indiceFrase !== indiceFraseAtual) {
           registrarLog(`Frase atual: ${indiceFrase + 1}/${frasesLeitura.length}`);
           renderizarTextoComMarcacao(indiceFrase);
@@ -687,7 +743,7 @@
 
       fala.onerror = function (event) {
         const erro = event.error || "erro não especificado";
-        const vozSelecionada = obterVozSelecionada();
+        const vozAtual = obterVozSelecionada();
 
         if (erro === "synthesis-failed") {
           atualizarStatus("A voz selecionada falhou durante a leitura. Tente Maria, Daniel ou reduza a velocidade.");
@@ -699,21 +755,32 @@
           atualizarStatus(`Erro na leitura: ${erro}.`);
         }
 
-        if (vozSelecionada) {
-          registrarLog(`ERRO SpeechSynthesis: ${erro} | Voz: ${vozSelecionada.name} (${vozSelecionada.lang})`);
+        if (vozAtual) {
+          registrarLog(`ERRO SpeechSynthesis: ${erro} | Voz: ${vozAtual.name} (${vozAtual.lang})`);
         } else {
           registrarLog(`ERRO SpeechSynthesis: ${erro} | Voz padrão do navegador`);
         }
+
+        registrarEstadoSintese("onerror");
       };
 
       fala.onend = function () {
         atualizarStatus("Leitura concluída.");
-        caixaTexto.innerText = textoOriginalLeitura;
+
+        if (acompanharLeitura) {
+          caixaTexto.innerText = textoOriginalLeitura;
+        }
+
         indiceFraseAtual = -1;
+        registrarEstadoSintese("onend");
       };
 
       leituraEmAndamento = fala;
       speechSynthesis.speak(fala);
+
+      setTimeout(() => {
+        registrarEstadoSintese("após speechSynthesis.speak");
+      }, 300);
     }
 
     function testarVoz() {
@@ -726,18 +793,45 @@
     }
 
     function pausarTexto() {
+      registrarEstadoSintese("antes de pausar");
+
       if (speechSynthesis.speaking && !speechSynthesis.paused) {
         speechSynthesis.pause();
         atualizarStatus("Leitura pausada.");
+
+        setTimeout(() => {
+          registrarEstadoSintese("após pausar");
+        }, 300);
       } else {
         atualizarStatus("Não há leitura ativa para pausar.");
       }
     }
 
     function continuarTexto() {
+      registrarEstadoSintese("antes de continuar");
+
       if (speechSynthesis.paused) {
         speechSynthesis.resume();
-        atualizarStatus("Leitura retomada.");
+        atualizarStatus("Tentando retomar leitura...");
+
+        setTimeout(() => {
+          registrarEstadoSintese("300ms após continuar");
+
+          if (speechSynthesis.paused) {
+            registrarLog("Ainda pausado após primeira tentativa. Tentando resume novamente.");
+            speechSynthesis.resume();
+          }
+        }, 300);
+
+        setTimeout(() => {
+          registrarEstadoSintese("900ms após continuar");
+
+          if (!speechSynthesis.paused) {
+            atualizarStatus("Leitura retomada.");
+          } else {
+            atualizarStatus("Não foi possível retomar. Esta voz pode não suportar pausa/continuação corretamente.");
+          }
+        }, 900);
       } else {
         atualizarStatus("Não há leitura pausada para continuar.");
       }
@@ -827,7 +921,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.3 iniciado.");
+    registrarLog("FoxReader V3.4 iniciado.");
 
     carregarVozes();
 
