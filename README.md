@@ -2,102 +2,91 @@
 
 Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando a API nativa do navegador (SpeechSynthesis).
 
+---
+
 ## 📌 Versão
 
-**V3.4**
+**V3.5**
 
 ---
 
 ## 🚀 Funcionalidades
 
+### 🔊 Leitura
 - Leitura de texto em voz (TTS)
+- Controle de velocidade de leitura
+- Pausar, continuar e parar leitura
+- Teste rápido de voz
+
+### 🎧 Vozes
 - Seleção de vozes disponíveis no sistema
 - Filtro automático para vozes em português
 - Preferência por vozes locais (offline)
-- Controle de velocidade de leitura
-- Botões de controle:
-  - ▶ Ler
-  - ⏸ Pausar
-  - ▶ Continuar
-  - ⛔ Parar
-- Teste de voz
-- Recarregar vozes
-- Área editável para inserção de texto
-- Opção para exibir vozes Online/Natural
-- Identificação visual de tipo de voz ([Local] / [Online/Natural])
-- Botão para limpar texto
-- Placeholder dinâmico na área de texto
-- Exibição do trecho atual sendo lido
-- Scroll automático durante a leitura
-- Normalização de texto
-- Alternância entre vozes principais e todas as vozes
+- Alternância entre vozes principais e todas
+- Identificação: `[Local]` / `[Online/Natural]`
+
+### 📝 Entrada de texto
+- Área editável para digitação/colagem
 - Carregamento de arquivos `.txt` e `.md`
-- Cabeçalho fixo durante o uso
-- Área de leitura com altura ajustada à tela
-- Rodapé informativo da aplicação
-- Melhor suporte a valores de velocidade com vírgula ou ponto
-- Layout estável com altura travada na tela
-- Scroll interno apenas na área de leitura
-- Remoção do quadro separado “Lendo agora”
-- Destaque da frase atual diretamente no texto
+- Normalização automática de texto
+- Limpeza rápida do conteúdo
+
+### 👁️ Leitura visual
+- Destaque da frase atual
+- Scroll automático durante leitura
+- Acompanhamento visual (ligar/desligar)
+
+### 📊 Diagnóstico
 - Sistema de log interno
-- Botão para mostrar/ocultar log
-- Botão para baixar log em `.txt`
-- Scroll mais inteligente na leitura
-- Redução de atualizações desnecessárias
-- Melhor tratamento de erros de voz
-- Controle de acompanhamento visual da leitura (on/off)
-- Scroll com posicionamento mais estável
-- Monitoramento interno do estado da síntese de voz
-- Melhor tratamento de pausa e retomada
+- Exibição do log na interface
+- Exportação do log em `.txt`
 
 ---
 
 ## 🧠 Inteligência aplicada
 
 - Filtragem automática de vozes `pt-BR`
-- Exclusão de vozes instáveis (`Online`, `Natural`)
 - Fallback inteligente:
-  - Voz local em português → prioridade
+  - Voz local → prioridade
   - Voz em português → alternativa
-  - Todas as vozes → último recurso
+  - Outras vozes → último recurso
 - Classificação de vozes:
-  - [Local] → mais estáveis
-  - [Online/Natural] → melhor qualidade, porém instáveis
-- Controle manual para exibir ou ocultar vozes online
+  - `[Local]` → mais estáveis
+  - `[Online/Natural]` → melhor qualidade, porém menos confiáveis
 
 ---
 
 ## ⚠️ Observações
 
-- O funcionamento depende das vozes instaladas no sistema operacional
-- Navegadores podem ter comportamentos diferentes
-- Algumas vozes online podem falhar
+- Depende das vozes instaladas no sistema operacional
+- Navegadores podem apresentar comportamentos diferentes
+- Algumas vozes online podem falhar ou não suportar pausa/retomada
 
 ---
 
 ## ▶️ Como usar
 
-1. Abra o arquivo `FoxReader.html` no navegador
-2. Aguarde o carregamento das vozes
-3. Escolha uma voz
-3.1 (Opcional) Marque "Mostrar vozes Online/Natural" para ampliar as opções
-4. Cole ou digite o texto
-5. Clique em **Ler texto**
+1. Abra o arquivo `FoxReader.html` no navegador  
+2. Aguarde o carregamento das vozes  
+3. Escolha uma voz  
+4. (Opcional) Clique em **Mostrar todas** para ampliar as opções  
+5. Cole, digite ou carregue um texto  
+6. Clique em **Ler texto**
 
 ---
 
 ## 🛠️ Tecnologias
 
-- HTML5
-- CSS3
-- JavaScript
+- HTML5  
+- CSS3  
+- JavaScript  
 - Web Speech API (SpeechSynthesis)
 
 ---
 
 ## 📂 Estrutura
-``` cmd
+
+```txt
 /
 ├── FoxReader.html
 ├── README.md
@@ -105,17 +94,13 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 └── legacy/
 ```
 
----
-
 ## 📈 Próximos passos (ideias)
-
-- Destaque de texto em tempo real
 - Interface dark mode
 - Controle de pitch
 - Exportação de áudio
-
----
+- Persistência de configurações (voz/velocidade)
 
 ## 👤 Autor
 
 Leandro Ribeiro
+

@@ -1,5 +1,27 @@
 \# 📜 CHANGELOG
 
+## [3.5] - 2026-05-01
+
+### 🔧 Melhorado
+- Scroll baseado em posição relativa da caixa (~30%), mais fluido e previsível
+- Reset completo da leitura (scroll, índice e texto)
+- Melhor consistência ao iniciar nova leitura
+
+### 🧠 Lógica
+- Controle interno de estado da leitura (leitura iniciada / pausa solicitada)
+- Melhor tratamento de retomada (resume)
+- Detecção de perda de estado de pausa
+
+### 🧪 Diagnóstico
+- Log da velocidade aplicada no início da leitura
+- Logs mais descritivos no fluxo de execução
+
+### ⚠️ Tratamento
+- Feedback mais claro quando não é possível retomar leitura
+- Tratamento mais robusto de falhas de voz e interrupções
+
+---
+
 ## [3.4] - 2026-04-30
 
 ### ✨ Adicionado
