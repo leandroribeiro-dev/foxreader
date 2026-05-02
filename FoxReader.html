@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.6</title>
+  <title>FoxReader V3.7</title>
 
   <style>
     * {
@@ -167,7 +167,7 @@
       background: white;
       border: 1px solid #bbb;
       border-radius: 8px;
-      padding: 22px;
+      padding: 36px 22px;
       font-size: 20px;
       outline: none;
       white-space: pre-wrap;
@@ -252,7 +252,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.6</h1>
+      <h1>FoxReader V3.7</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto para leitura em voz alta.
@@ -282,7 +282,6 @@
       </div>
 
       <div class="botoes">
-        <button onclick="testarVoz()">Testar voz</button>
         <button onclick="lerTexto()">Ler texto</button>
         <button onclick="pausarTexto()">Pausar</button>
         <button onclick="continuarTexto()">Continuar</button>
@@ -315,7 +314,7 @@
       <!-- Para usar imagem depois:
       <img src="img/raposinha.png" alt="FoxReader">
       -->
-      FoxReader V3.6 — HTML, CSS e JavaScript
+      FoxReader V3.7 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -329,11 +328,15 @@
     let frasesLeitura = [];
     let leituraEmAndamento = null;
     let indiceFraseAtual = -1;
+    let indiceBaseLeitura = 0;
 
     let leituraPausadaSolicitada = false;
     let leituraIniciada = false;
 
     let registrosLog = [];
+
+    let ultimoAvancoVisual = 0;
+    const intervaloMinimoAvancoVisual = 650;
 
     const seletor = document.getElementById("seletorVoz");
     const statusBox = document.getElementById("status");
@@ -392,21 +395,19 @@
     }
 
     function irParaInicioDoTexto() {
-      /*
-        V3.6:
-        Função dedicada para forçar o box a voltar ao início visual.
-        Usa repetição curta porque o conteúdo pode ser re-renderizado logo após.
-      */
-
       caixaTexto.scrollTop = 0;
 
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         caixaTexto.scrollTop = 0;
-      }, 50);
+      });
 
       setTimeout(() => {
         caixaTexto.scrollTop = 0;
-      }, 150);
+      }, 80);
+
+      setTimeout(() => {
+        caixaTexto.scrollTop = 0;
+      }, 180);
 
       registrarLog("Box de texto reposicionado para o início.");
     }
@@ -633,6 +634,10 @@
         return;
       }
 
+      if (indiceFrase < 0 || indiceFrase >= frasesLeitura.length) {
+        return;
+      }
+
       if (indiceFrase === indiceFraseAtual) {
         return;
       }
@@ -662,9 +667,10 @@
 
     function rolarDentroDaCaixa(elemento) {
       /*
-        V3.6:
-        Mantém a frase marcada numa posição confortável:
-        aproximadamente 30% da altura da caixa.
+        V3.7:
+        Mantém a frase marcada numa posição confortável.
+        A rolagem só acompanha a frase marcada, sem tentar correr junto
+        com todos os eventos de boundary.
       */
 
       const posicaoDesejada = caixaTexto.clientHeight * 0.30;
@@ -687,10 +693,10 @@
       });
     }
 
-    function localizarFrasePorCaracter(charIndex) {
+    function localizarFrasePorCaracterNoTrecho(charIndex, indiceInicial) {
       let acumulado = 0;
 
-      for (let i = 0; i < frasesLeitura.length; i++) {
+      for (let i = indiceInicial; i < frasesLeitura.length; i++) {
         const tamanho = frasesLeitura[i].length + 1;
 
         if (charIndex >= acumulado && charIndex < acumulado + tamanho) {
@@ -709,6 +715,40 @@
       );
     }
 
+    function podeAtualizarMarcador(indiceFraseAlvo) {
+      if (indiceFraseAlvo < 0) {
+        return false;
+      }
+
+      if (indiceFraseAtual < 0) {
+        return true;
+      }
+
+      if (indiceFraseAlvo <= indiceFraseAtual) {
+        return false;
+      }
+
+      const agora = Date.now();
+
+      if (agora - ultimoAvancoVisual < intervaloMinimoAvancoVisual) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function limitarAvancoVisual(indiceFraseAlvo) {
+      if (indiceFraseAtual < 0) {
+        return indiceFraseAlvo;
+      }
+
+      if (indiceFraseAlvo > indiceFraseAtual + 1) {
+        return indiceFraseAtual + 1;
+      }
+
+      return indiceFraseAlvo;
+    }
+
     function prepararLeitura(texto, indiceInicial = 0, modoRetomada = false) {
       if (!texto.trim()) {
         alert("Não há texto para leitura.");
@@ -719,12 +759,16 @@
 
       leituraPausadaSolicitada = false;
       leituraIniciada = true;
+      indiceBaseLeitura = indiceInicial;
+      ultimoAvancoVisual = 0;
 
       if (!modoRetomada) {
         textoOriginalLeitura = texto.trim();
         frasesLeitura = dividirEmFrases(textoOriginalLeitura);
         indiceFraseAtual = -1;
+        indiceBaseLeitura = 0;
 
+        caixaTexto.innerText = textoOriginalLeitura;
         irParaInicioDoTexto();
 
         registrarLog(`Texto preparado. Total de frases detectadas: ${frasesLeitura.length}`);
@@ -771,6 +815,8 @@
           } else {
             renderizarTextoComMarcacao(indiceInicial);
           }
+
+          ultimoAvancoVisual = Date.now();
         }
       };
 
@@ -783,15 +829,18 @@
           return;
         }
 
-        let indiceFrase = localizarFrasePorCaracter(event.charIndex);
+        let indiceFraseAlvo = localizarFrasePorCaracterNoTrecho(event.charIndex, indiceBaseLeitura);
 
-        if (modoRetomada) {
-          indiceFrase = indiceFrase + indiceInicial;
+        if (!podeAtualizarMarcador(indiceFraseAlvo)) {
+          return;
         }
 
-        if (indiceFrase >= 0 && indiceFrase !== indiceFraseAtual) {
-          registrarLog(`Frase atual: ${indiceFrase + 1}/${frasesLeitura.length}`);
-          renderizarTextoComMarcacao(indiceFrase);
+        indiceFraseAlvo = limitarAvancoVisual(indiceFraseAlvo);
+
+        if (indiceFraseAlvo >= 0 && indiceFraseAlvo !== indiceFraseAtual) {
+          registrarLog(`Frase atual: ${indiceFraseAlvo + 1}/${frasesLeitura.length}`);
+          renderizarTextoComMarcacao(indiceFraseAlvo);
+          ultimoAvancoVisual = Date.now();
         }
       };
 
@@ -829,6 +878,7 @@
         }
 
         indiceFraseAtual = -1;
+        indiceBaseLeitura = 0;
         leituraIniciada = false;
         leituraPausadaSolicitada = false;
 
@@ -845,10 +895,6 @@
 
     function falar(texto) {
       prepararLeitura(texto, 0, false);
-    }
-
-    function testarVoz() {
-      falar("Teste de leitura do FoxReader. Esta é uma voz em português.");
     }
 
     function lerTexto() {
@@ -930,11 +976,6 @@
         indiceRetomada = 0;
       }
 
-      /*
-        Retoma da frase atual, não da próxima.
-        Isso evita perda de conteúdo quando a pausa acontece no meio da frase.
-      */
-
       registrarLog(`Retomada manual acionada. Índice: ${indiceRetomada + 1}/${frasesLeitura.length}`);
 
       prepararLeitura(textoOriginalLeitura, indiceRetomada, true);
@@ -948,6 +989,7 @@
       }
 
       indiceFraseAtual = -1;
+      indiceBaseLeitura = 0;
       leituraPausadaSolicitada = false;
       leituraIniciada = false;
 
@@ -960,6 +1002,7 @@
       textoOriginalLeitura = "";
       frasesLeitura = [];
       indiceFraseAtual = -1;
+      indiceBaseLeitura = 0;
       caixaTexto.innerText = "";
       caixaTexto.focus();
       atualizarStatus("Texto limpo.");
@@ -1015,6 +1058,7 @@
         textoOriginalLeitura = "";
         frasesLeitura = [];
         indiceFraseAtual = -1;
+        indiceBaseLeitura = 0;
 
         irParaInicioDoTexto();
 
@@ -1030,7 +1074,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.6 iniciado.");
+    registrarLog("FoxReader V3.7 iniciado.");
 
     carregarVozes();
 
