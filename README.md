@@ -6,7 +6,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 ## 📌 Versão
 
-**V3.5**
+**V3.6**
 
 ---
 

@@ -1,5 +1,14 @@
 \# 📜 CHANGELOG
 
+
+## [3.6] - Em desenvolvimento
+
+### 🚧 Em andamento
+- Início do ciclo de desenvolvimento da versão 3.6.
+- Preparação para novos ajustes e melhorias do FoxReader.
+
+---
+
 ## [3.5] - 2026-05-01
 
 ### 🔧 Melhorado
