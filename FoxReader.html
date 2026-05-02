@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.7</title>
+  <title>FoxReader V3.8</title>
 
   <style>
     * {
@@ -173,7 +173,7 @@
       white-space: pre-wrap;
       overflow-y: auto;
       box-shadow: 0 2px 7px rgba(0,0,0,0.10);
-      scroll-behavior: smooth;
+      scroll-behavior: auto;
     }
 
     .box:empty::before {
@@ -211,12 +211,6 @@
       padding: 4px;
     }
 
-    footer img {
-      max-height: 28px;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-
     @media (max-width: 950px) {
       html,
       body {
@@ -252,7 +246,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.7</h1>
+      <h1>FoxReader V3.8</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto para leitura em voz alta.
@@ -288,6 +282,7 @@
         <button class="stop" onclick="pararTexto()">Parar</button>
         <button class="clear" onclick="limparTexto()">Limpar texto</button>
         <button class="adjust" onclick="normalizarTexto()">Normalizar texto</button>
+        <button class="adjust" onclick="limparMarkdownDoBox()">Limpar Markdown</button>
         <button id="btnAcompanhar" class="track-on" onclick="alternarAcompanhamento()">Acompanhar: Ligado</button>
         <button onclick="carregarVozes()">Recarregar vozes</button>
         <button class="log" onclick="alternarLog()">Mostrar log</button>
@@ -311,10 +306,7 @@
     </main>
 
     <footer>
-      <!-- Para usar imagem depois:
-      <img src="img/raposinha.png" alt="FoxReader">
-      -->
-      FoxReader V3.7 — HTML, CSS e JavaScript
+      FoxReader V3.8 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -609,6 +601,68 @@
         .replace(/>/g, "&gt;");
     }
 
+    function limparMarkdown(texto) {
+      return texto
+        // Remove cercas de código ```
+        .replace(/```[\s\S]*?```/g, " bloco de código ")
+
+        // Remove títulos Markdown: #, ##, ### etc.
+        .replace(/^\s{0,3}#{1,6}\s+/gm, "")
+
+        // Remove negrito/itálico simples
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/__(.*?)__/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/_(.*?)_/g, "$1")
+
+        // Remove inline code
+        .replace(/`([^`]+)`/g, "$1")
+
+        // Converte links [texto](url) em apenas texto
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+
+        // Remove imagens ![alt](url)
+        .replace(/!\[([^\]]*)\]\([^)]+\)/g, "$1")
+
+        // Remove blockquote >
+        .replace(/^\s{0,3}>\s?/gm, "")
+
+        // Remove bullets comuns no começo da linha
+        .replace(/^\s*[-*+]\s+/gm, "")
+
+        // Remove numeração de lista 1. 2. etc.
+        .replace(/^\s*\d+\.\s+/gm, "")
+
+        // Remove linhas horizontais ---
+        .replace(/^\s*[-*_]{3,}\s*$/gm, "")
+
+        // Remove tabelas simples: pipes viram espaços
+        .replace(/\|/g, " ")
+
+        // Remove excesso de espaços
+        .replace(/[ \t]{2,}/g, " ")
+
+        // Remove espaço antes de pontuação
+        .replace(/\s+([,.!?;:])/g, "$1")
+
+        .trim();
+    }
+
+    function limparMarkdownDoBox() {
+      pararTexto(false);
+
+      const texto = caixaTexto.innerText;
+
+      if (!texto.trim()) {
+        alert("Não há texto para limpar.");
+        return;
+      }
+
+      caixaTexto.innerText = limparMarkdown(texto);
+      irParaInicioDoTexto();
+      atualizarStatus("Markdown limpo.");
+    }
+
     function montarTextoAPartirDaFrase(indiceInicial) {
       if (!frasesLeitura || frasesLeitura.length === 0) {
         return textoOriginalLeitura;
@@ -658,39 +712,9 @@
 
       caixaTexto.innerHTML = html.trim();
 
-      const marcada = caixaTexto.querySelector(".frase-marcada");
-
-      if (marcada) {
-        rolarDentroDaCaixa(marcada);
-      }
-    }
-
-    function rolarDentroDaCaixa(elemento) {
-      /*
-        V3.7:
-        Mantém a frase marcada numa posição confortável.
-        A rolagem só acompanha a frase marcada, sem tentar correr junto
-        com todos os eventos de boundary.
-      */
-
-      const posicaoDesejada = caixaTexto.clientHeight * 0.30;
-
-      let novoScroll = elemento.offsetTop - posicaoDesejada;
-
-      const maxScroll = caixaTexto.scrollHeight - caixaTexto.clientHeight;
-
-      if (novoScroll < 0) {
-        novoScroll = 0;
-      }
-
-      if (novoScroll > maxScroll) {
-        novoScroll = maxScroll;
-      }
-
-      caixaTexto.scrollTo({
-        top: novoScroll,
-        behavior: "smooth"
-      });
+      // V3.8:
+      // A rolagem automática foi removida.
+      // O usuário controla a barra manualmente.
     }
 
     function localizarFrasePorCaracterNoTrecho(charIndex, indiceInicial) {
@@ -1054,15 +1078,22 @@
       leitor.onload = function(e) {
         pararTexto(false);
 
-        caixaTexto.innerText = e.target.result;
+        let conteudo = e.target.result;
+
+        if (nome.endsWith(".md")) {
+          conteudo = limparMarkdown(conteudo);
+          atualizarStatus(`Arquivo Markdown carregado e limpo: ${arquivo.name}`);
+        } else {
+          atualizarStatus(`Arquivo carregado: ${arquivo.name}`);
+        }
+
+        caixaTexto.innerText = conteudo;
         textoOriginalLeitura = "";
         frasesLeitura = [];
         indiceFraseAtual = -1;
         indiceBaseLeitura = 0;
 
         irParaInicioDoTexto();
-
-        atualizarStatus(`Arquivo carregado: ${arquivo.name}`);
       };
 
       leitor.onerror = function() {
@@ -1074,7 +1105,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.7 iniciado.");
+    registrarLog("FoxReader V3.8 iniciado.");
 
     carregarVozes();
 

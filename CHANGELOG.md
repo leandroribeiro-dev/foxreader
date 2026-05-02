@@ -2,9 +2,57 @@
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
-# 📜 CHANGELOG - FoxReader V3.7
+## \[3.8] - Em desenvolvimento
 
-Registro da evolução técnica referente à versão **V3.7** do FoxReader.
+
+### ✨ Adicionado
+
+- Função `limparMarkdown()` para remover ou simplificar sintaxe Markdown antes da leitura.
+- Função `limparMarkdownDoBox()` para aplicar limpeza Markdown manualmente no texto exibido.
+- Botão \*\*Limpar Markdown\*\* na interface.
+- Limpeza automática de arquivos `.md` durante o carregamento.
+
+
+### 🔧 Melhorado
+
+- Leitura de arquivos Markdown, evitando que símbolos como `#`, `\*`, crases e pipes sejam pronunciados.
+- Fluxo de carregamento de arquivos `.md`, agora com tratamento específico.
+- Experiência de estudo com textos vindos de anotações, apostilas e arquivos Markdown.
+- Controle visual da leitura, mantendo o destaque da frase atual sem forçar a rolagem automática.
+
+
+### 🧠 Lógica
+
+- Arquivos `.md` passam por pré-processamento antes de serem exibidos na caixa de texto.
+- Textos colados manualmente podem ser tratados pelo botão \*\*Limpar Markdown\*\*.
+- O destaque amarelo da frase atual foi mantido.
+- A rolagem automática do marcador foi removida.
+- O usuário passa a controlar manualmente a posição da barra de rolagem.
+
+
+### 🎨 Interface
+
+- Adicionado botão \*\*Limpar Markdown\*\* junto aos controles principais.
+- Mantido o layout visual da V3.7.
+- Mantido o espaçamento interno ampliado da caixa de texto.
+- Alterado `scroll-behavior` da caixa de texto para `auto`.
+
+
+### 🧪 Diagnóstico
+
+- Mantidos os logs de leitura, pausa, continuação, erro e conclusão.
+- Mantido o registro da frase atual durante o acompanhamento visual.
+- Adicionado feedback de status ao carregar e limpar arquivos Markdown.
+
+
+### ⚠️ Tratamento
+
+- Títulos Markdown com `#` são convertidos em texto comum.
+- Marcações de negrito e itálico são removidas mantendo o conteúdo.
+- Links Markdown são convertidos para o texto visível.
+- Imagens Markdown são simplificadas pelo texto alternativo.
+- Citações, listas, linhas horizontais e separadores de tabela são limpos ou simplificados.
+- Blocos de código Markdown são simplificados como “bloco de código”.
 
 ---
 

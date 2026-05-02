@@ -14,7 +14,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-\*\*V3.7\*\*
+\*\*V3.8\*\*
 
 
 
@@ -60,6 +60,10 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Carregamento de arquivos `.txt` e `.md`
 
+\- Limpeza automática de Markdown ao carregar arquivos `.md`
+
+\- Botão manual \*\*Limpar Markdown\*\*
+
 \- Normalização automática de texto
 
 \- Limpeza rápida do conteúdo
@@ -70,15 +74,15 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Destaque da frase atual
 
-\- Scroll automático durante leitura
+\- Acompanhamento visual com marcação amarela
 
-\- Acompanhamento visual (ligar/desligar)
+\- Acompanhamento visual ligável/desligável
+
+\- Rolagem automática removida para evitar avanço visual acelerado
+
+\- Controle manual da barra de rolagem pelo usuário
 
 \- Reposicionamento automático do texto ao iniciar, normalizar ou carregar arquivo
-
-\- Controle de avanço visual para evitar saltos excessivos na marcação
-
-\- Limitação de avanço da marcação para manter a leitura mais previsível
 
 
 
@@ -128,6 +132,50 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Limitação de avanço visual para evitar saltos bruscos entre frases
 
+\- Limpeza básica de sintaxe Markdown para melhorar a leitura em voz alta
+
+
+
+\---
+
+
+
+\## 🧹 Limpeza de Markdown
+
+
+
+A versão \*\*V3.8\*\* adiciona tratamento básico para arquivos Markdown.
+
+
+
+Ao carregar um arquivo `.md`, o FoxReader remove ou simplifica elementos como:
+
+
+
+\- títulos com `#`
+
+\- negrito com `\*\*texto\*\*`
+
+\- itálico com `\*texto\*`
+
+\- código inline com crases
+
+\- links no formato `\[texto](url)`
+
+\- imagens no formato `!\[alt](url)`
+
+\- citações com `>`
+
+\- listas com `-`, `\*`, `+` ou numeração
+
+\- linhas horizontais
+
+\- separadores de tabela com `|`
+
+
+
+O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação durante o estudo.
+
 
 
 \---
@@ -147,6 +195,10 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- A retomada manual pode repetir parte da frase atual para evitar perda de conteúdo.
 
 \- A marcação visual foi ajustada para priorizar estabilidade em vez de avanço agressivo.
+
+\- Na V3.8, a rolagem automática foi removida; o usuário controla a posição do texto manualmente.
+
+\- Blocos de código Markdown são simplificados para melhorar a leitura em voz alta.
 
 
 
@@ -168,13 +220,17 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 5\. Cole, digite ou carregue um texto.
 
-6\. Clique em \*\*Ler texto\*\*.
+6\. Ao carregar arquivo `.md`, a limpeza básica de Markdown será aplicada automaticamente.
 
-7\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
+7\. Para texto colado manualmente, use \*\*Limpar Markdown\*\* se necessário.
 
-8\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+8\. Clique em \*\*Ler texto\*\*.
 
-9\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
+9\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
+
+10\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+
+11\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
 
 
 
@@ -242,6 +298,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Refinamento do comportamento entre diferentes navegadores e vozes
 
+\- Ajuste mais inteligente para leitura de blocos de código Markdown
+
 
 
 \---
@@ -252,7 +310,5 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-Leandro Ribeiro
-
-
+Leandro Ribeiro 
 
