@@ -1,6 +1,6 @@
 # 🦊 FoxReader
 
-Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando a API nativa do navegador (SpeechSynthesis).
+Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando a API nativa do navegador (`SpeechSynthesis`).
 
 ---
 
@@ -17,6 +17,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 - Controle de velocidade de leitura
 - Pausar, continuar e parar leitura
 - Teste rápido de voz
+- Retomada manual quando o navegador falha ao continuar a leitura
 
 ### 🎧 Vozes
 - Seleção de vozes disponíveis no sistema
@@ -35,11 +36,13 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 - Destaque da frase atual
 - Scroll automático durante leitura
 - Acompanhamento visual (ligar/desligar)
+- Reposicionamento automático do texto ao iniciar, normalizar ou carregar arquivo
 
 ### 📊 Diagnóstico
 - Sistema de log interno
 - Exibição do log na interface
 - Exportação do log em `.txt`
+- Registro de estados internos da síntese de voz
 
 ---
 
@@ -53,34 +56,37 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 - Classificação de vozes:
   - `[Local]` → mais estáveis
   - `[Online/Natural]` → melhor qualidade, porém menos confiáveis
+- Tratamento complementar para falhas de pausa/retomada
 
 ---
 
 ## ⚠️ Observações
 
-- Depende das vozes instaladas no sistema operacional
-- Navegadores podem apresentar comportamentos diferentes
-- Algumas vozes online podem falhar ou não suportar pausa/retomada
+- O funcionamento depende das vozes instaladas no sistema operacional.
+- Navegadores podem apresentar comportamentos diferentes.
+- Algumas vozes online podem falhar ou não suportar pausa/retomada corretamente.
+- A retomada manual pode repetir parte da frase atual para evitar perda de conteúdo.
 
 ---
 
 ## ▶️ Como usar
 
-1. Abra o arquivo `FoxReader.html` no navegador  
-2. Aguarde o carregamento das vozes  
-3. Escolha uma voz  
-4. (Opcional) Clique em **Mostrar todas** para ampliar as opções  
-5. Cole, digite ou carregue um texto  
-6. Clique em **Ler texto**
+1. Abra o arquivo `FoxReader.html` no navegador.
+2. Aguarde o carregamento das vozes.
+3. Escolha uma voz.
+4. Opcionalmente, clique em **Mostrar todas** para ampliar as opções.
+5. Cole, digite ou carregue um texto.
+6. Clique em **Ler texto**.
+7. Use **Pausar**, **Continuar** ou **Parar** conforme necessário.
 
 ---
 
 ## 🛠️ Tecnologias
 
-- HTML5  
-- CSS3  
-- JavaScript  
-- Web Speech API (SpeechSynthesis)
+- HTML5
+- CSS3
+- JavaScript
+- Web Speech API (`SpeechSynthesis`)
 
 ---
 
@@ -94,13 +100,19 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 └── legacy/
 ```
 
+---
+
 ## 📈 Próximos passos (ideias)
+
 - Interface dark mode
 - Controle de pitch
 - Exportação de áudio
 - Persistência de configurações (voz/velocidade)
+- Separação futura de HTML, CSS e JavaScript
+- Melhorias no sistema de retomada por frase
+
+---
 
 ## 👤 Autor
 
 Leandro Ribeiro
-

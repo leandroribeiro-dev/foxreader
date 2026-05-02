@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.5</title>
+  <title>FoxReader V3.6</title>
 
   <style>
     * {
@@ -252,7 +252,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.5</h1>
+      <h1>FoxReader V3.6</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto para leitura em voz alta.
@@ -315,7 +315,7 @@
       <!-- Para usar imagem depois:
       <img src="img/raposinha.png" alt="FoxReader">
       -->
-      FoxReader V3.5 — HTML, CSS e JavaScript
+      FoxReader V3.6 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -349,11 +349,15 @@
       const linha = `[${hora}] ${mensagem}`;
 
       registrosLog.push(linha);
-
       painelLog.textContent = registrosLog.join("\n");
       painelLog.scrollTop = painelLog.scrollHeight;
 
       console.log(linha);
+    }
+
+    function atualizarStatus(mensagem) {
+      statusBox.textContent = mensagem;
+      registrarLog(mensagem);
     }
 
     function alternarLog() {
@@ -387,9 +391,24 @@
       registrarLog("Log baixado em arquivo TXT.");
     }
 
-    function atualizarStatus(mensagem) {
-      statusBox.textContent = mensagem;
-      registrarLog(mensagem);
+    function irParaInicioDoTexto() {
+      /*
+        V3.6:
+        Função dedicada para forçar o box a voltar ao início visual.
+        Usa repetição curta porque o conteúdo pode ser re-renderizado logo após.
+      */
+
+      caixaTexto.scrollTop = 0;
+
+      setTimeout(() => {
+        caixaTexto.scrollTop = 0;
+      }, 50);
+
+      setTimeout(() => {
+        caixaTexto.scrollTop = 0;
+      }, 150);
+
+      registrarLog("Box de texto reposicionado para o início.");
     }
 
     function alternarAcompanhamento() {
@@ -589,6 +608,22 @@
         .replace(/>/g, "&gt;");
     }
 
+    function montarTextoAPartirDaFrase(indiceInicial) {
+      if (!frasesLeitura || frasesLeitura.length === 0) {
+        return textoOriginalLeitura;
+      }
+
+      if (indiceInicial < 0) {
+        indiceInicial = 0;
+      }
+
+      if (indiceInicial >= frasesLeitura.length) {
+        indiceInicial = frasesLeitura.length - 1;
+      }
+
+      return frasesLeitura.slice(indiceInicial).join(" ");
+    }
+
     function renderizarTextoComMarcacao(indiceFrase) {
       if (!acompanharLeitura) {
         return;
@@ -627,10 +662,9 @@
 
     function rolarDentroDaCaixa(elemento) {
       /*
-        V3.5:
-        Mantém a frase marcada em uma posição mais confortável:
+        V3.6:
+        Mantém a frase marcada numa posição confortável:
         aproximadamente 30% da altura da caixa.
-        Ao iniciar, a caixa volta para o topo.
       */
 
       const posicaoDesejada = caixaTexto.clientHeight * 0.30;
@@ -675,28 +709,37 @@
       );
     }
 
-    function falar(texto) {
+    function prepararLeitura(texto, indiceInicial = 0, modoRetomada = false) {
       if (!texto.trim()) {
         alert("Não há texto para leitura.");
         return;
       }
 
-      pararTexto(false);
+      speechSynthesis.cancel();
 
-      textoOriginalLeitura = texto.trim();
-      frasesLeitura = dividirEmFrases(textoOriginalLeitura);
-      indiceFraseAtual = -1;
       leituraPausadaSolicitada = false;
       leituraIniciada = true;
 
-      // Sempre inicia a leitura do topo da caixa.
-      caixaTexto.scrollTop = 0;
+      if (!modoRetomada) {
+        textoOriginalLeitura = texto.trim();
+        frasesLeitura = dividirEmFrases(textoOriginalLeitura);
+        indiceFraseAtual = -1;
 
-      registrarLog(`Texto preparado. Total de frases detectadas: ${frasesLeitura.length}`);
+        irParaInicioDoTexto();
+
+        registrarLog(`Texto preparado. Total de frases detectadas: ${frasesLeitura.length}`);
+      } else {
+        registrarLog(`Retomada manual solicitada a partir da frase ${indiceInicial + 1}/${frasesLeitura.length}.`);
+      }
+
       registrarLog(`Acompanhamento visual: ${acompanharLeitura ? "ligado" : "desligado"}`);
       registrarLog(`Velocidade aplicada no início da leitura: ${obterVelocidade()}`);
 
-      const fala = new SpeechSynthesisUtterance(textoOriginalLeitura);
+      let textoParaLer = modoRetomada
+        ? montarTextoAPartirDaFrase(indiceInicial)
+        : textoOriginalLeitura;
+
+      const fala = new SpeechSynthesisUtterance(textoParaLer);
       const vozSelecionada = obterVozSelecionada();
 
       fala.rate = obterVelocidade();
@@ -722,8 +765,12 @@
         registrarEstadoSintese("onstart");
 
         if (acompanharLeitura) {
-          caixaTexto.scrollTop = 0;
-          renderizarTextoComMarcacao(0);
+          if (!modoRetomada) {
+            irParaInicioDoTexto();
+            renderizarTextoComMarcacao(0);
+          } else {
+            renderizarTextoComMarcacao(indiceInicial);
+          }
         }
       };
 
@@ -736,7 +783,11 @@
           return;
         }
 
-        const indiceFrase = localizarFrasePorCaracter(event.charIndex);
+        let indiceFrase = localizarFrasePorCaracter(event.charIndex);
+
+        if (modoRetomada) {
+          indiceFrase = indiceFrase + indiceInicial;
+        }
 
         if (indiceFrase >= 0 && indiceFrase !== indiceFraseAtual) {
           registrarLog(`Frase atual: ${indiceFrase + 1}/${frasesLeitura.length}`);
@@ -792,6 +843,10 @@
       }, 300);
     }
 
+    function falar(texto) {
+      prepararLeitura(texto, 0, false);
+    }
+
     function testarVoz() {
       falar("Teste de leitura do FoxReader. Esta é uma voz em português.");
     }
@@ -840,7 +895,8 @@
             leituraPausadaSolicitada = false;
             atualizarStatus("Leitura retomada.");
           } else {
-            atualizarStatus("Não foi possível retomar. Esta voz pode não suportar pausa/continuação corretamente.");
+            atualizarStatus("Resume nativo falhou. Tentando retomada manual.");
+            retomarManual();
           }
         }, 900);
 
@@ -848,8 +904,9 @@
       }
 
       if (leituraPausadaSolicitada) {
-        atualizarStatus("O navegador perdeu o estado de pausa. Reinicie a leitura ou teste uma voz local.");
-        registrarLog("Continuar falhou: pausa solicitada, mas speechSynthesis.paused=false.");
+        atualizarStatus("O navegador perdeu o estado de pausa. Tentando retomada manual.");
+        registrarLog("Continuar: pausa solicitada, mas speechSynthesis.paused=false. Acionando retomada manual.");
+        retomarManual();
         return;
       }
 
@@ -859,6 +916,28 @@
       }
 
       atualizarStatus("Não há leitura pausada para continuar.");
+    }
+
+    function retomarManual() {
+      if (!textoOriginalLeitura || !frasesLeitura || frasesLeitura.length === 0) {
+        atualizarStatus("Não há texto anterior para retomada manual.");
+        return;
+      }
+
+      let indiceRetomada = indiceFraseAtual;
+
+      if (indiceRetomada < 0) {
+        indiceRetomada = 0;
+      }
+
+      /*
+        Retoma da frase atual, não da próxima.
+        Isso evita perda de conteúdo quando a pausa acontece no meio da frase.
+      */
+
+      registrarLog(`Retomada manual acionada. Índice: ${indiceRetomada + 1}/${frasesLeitura.length}`);
+
+      prepararLeitura(textoOriginalLeitura, indiceRetomada, true);
     }
 
     function pararTexto(restaurarTexto = true) {
@@ -908,6 +987,7 @@
         .trim();
 
       caixaTexto.innerText = texto;
+      irParaInicioDoTexto();
       atualizarStatus("Texto normalizado.");
     }
 
@@ -935,7 +1015,8 @@
         textoOriginalLeitura = "";
         frasesLeitura = [];
         indiceFraseAtual = -1;
-        caixaTexto.scrollTop = 0;
+
+        irParaInicioDoTexto();
 
         atualizarStatus(`Arquivo carregado: ${arquivo.name}`);
       };
@@ -949,7 +1030,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.5 iniciado.");
+    registrarLog("FoxReader V3.6 iniciado.");
 
     carregarVozes();
 
