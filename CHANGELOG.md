@@ -2,6 +2,77 @@
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
+# 📜 CHANGELOG - FoxReader V3.7
+
+Registro da evolução técnica referente à versão **V3.7** do FoxReader.
+
+---
+
+## [3.7] - Em desenvolvimento
+
+
+### ✨ Adicionado
+
+- Controle de índice base da leitura com `indiceBaseLeitura`.
+- Controle temporal do avanço visual com `ultimoAvancoVisual`.
+- Intervalo mínimo entre avanços visuais com `intervaloMinimoAvancoVisual`.
+- Função `localizarFrasePorCaracterNoTrecho()` para localizar frases considerando retomadas parciais.
+- Função `podeAtualizarMarcador()` para evitar atualizações visuais excessivas.
+- Função `limitarAvancoVisual()` para impedir saltos bruscos entre frases.
+
+
+### 🔧 Melhorado
+
+- Ajuste do espaçamento interno da caixa de texto.
+- Reposicionamento inicial do texto usando `requestAnimationFrame()`.
+- Controle visual da frase atual durante a leitura.
+- Comportamento da retomada manual após pausa.
+- Sincronia entre leitura, frase marcada e rolagem interna.
+- Estabilidade do acompanhamento visual em textos longos.
+
+
+### 🧠 Lógica
+
+- A leitura passou a controlar melhor o ponto de retomada por frase.
+- A marcação visual agora evita retrocessos e avanços repetidos.
+- O marcador não avança mais para frases anteriores à frase atual.
+- O avanço visual passou a ser limitado a uma frase por atualização.
+- A retomada manual passou a usar uma base de índice para localizar corretamente o trecho em leitura.
+
+
+
+### 🧪 Diagnóstico
+
+- Registro da frase atual com base no índice real da leitura.
+- Logs de retomada manual mantidos para análise do comportamento da voz.
+- Melhor rastreamento do fluxo entre `onstart`, `onboundary`, `onerror` e `onend`.
+
+
+### 🎨 Interface
+
+- Removido o botão \*\*Testar voz\*\*.
+- Caixa de texto recebeu maior espaçamento vertical interno.
+- Interface ficou mais focada nas ações principais de leitura.
+
+
+### ⚠️ Tratamento
+
+- Prevenção contra índice de frase inválido na renderização.
+- Reset de `indiceBaseLeitura` ao finalizar, parar, limpar, normalizar ou carregar novo arquivo.
+- Redução de saltos visuais causados por múltiplos eventos `boundary`.
+- Priorização da estabilidade visual em vez de atualização agressiva da marcação.
+
+--- 
+
+## Resumo técnico
+
+
+A versão **V3.7** refinou o acompanhamento visual da leitura.
+
+O foco principal foi controlar melhor o avanço da frase marcada, especialmente durante pausas, retomadas e eventos rápidos gerados pela `SpeechSynthesis`.
+
+Esta versão representa uma etapa intermediária de estabilização da leitura visual, ainda dentro do ciclo evolutivo da série V3.x.
+
 ---
 
 ## [3.6] - Em desenvolvimento
