@@ -14,7 +14,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-\*\*V3.9\*\*
+\*\*V3.9.1\*\*
 
 
 
@@ -88,6 +88,12 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Reposicionamento automático do texto ao iniciar, normalizar ou carregar arquivo
 
+\- Espaçamento interno da caixa de texto ajustado
+
+\- Melhor quebra de palavras longas
+
+\- Seleção visual com fundo azul claro
+
 
 
 \### 🖱️ Navegação por clique
@@ -154,6 +160,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Detecção da posição/frase clicada para iniciar a leitura a partir de um ponto específico
 
+\- Ajustes visuais para melhorar conforto de leitura e evitar texto colado na borda
+
 
 
 \---
@@ -164,7 +172,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-A versão \*\*V3.9\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
+A versão \*\*V3.9.1\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
 
 
 
@@ -206,7 +214,7 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 
 
-A versão \*\*V3.9\*\* adiciona a possibilidade de iniciar a leitura a partir de uma frase específica.
+A versão \*\*V3.9.1\*\* mantém a possibilidade de iniciar a leitura a partir de uma frase específica.
 
 
 
@@ -226,7 +234,35 @@ Funcionamento básico:
 
 
 
-Esse recurso facilita o estudo de textos longos, permitindo retomar a leitura em pontos intermediários sem precisar reiniciar desde o começo.
+\---
+
+
+
+\## 🎨 Ajuste visual da V3.9.1
+
+
+
+A versão \*\*V3.9.1\*\* refinou a área principal de leitura.
+
+
+
+Foram ajustados:
+
+
+
+\- `padding` interno da caixa de texto
+
+\- espaço extra à direita para evitar conflito com a barra de rolagem
+
+\- `line-height` para melhorar a leitura
+
+\- `word-break` para evitar estouro de palavras longas
+
+\- cor de seleção do texto
+
+
+
+Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúdo ficar colado ou sobreposto à borda.
 
 
 
@@ -252,7 +288,9 @@ Esse recurso facilita o estudo de textos longos, permitindo retomar a leitura em
 
 \- Blocos de código Markdown são simplificados para melhorar a leitura em voz alta.
 
-\- Na V3.9, clicar no texto pode iniciar a leitura a partir da frase clicada.
+\- Clicar no texto pode iniciar a leitura a partir da frase clicada.
+
+\- A V3.9.1 é uma versão de ajuste visual sobre a V3.9.
 
 
 
@@ -336,7 +374,9 @@ Esse recurso facilita o estudo de textos longos, permitindo retomar a leitura em
 
 
 
-📈 Próximos passos (ideias)
+
+
+\## 📈 Próximos passos (ideias)
 
 \- Interface dark mode
 
@@ -358,13 +398,15 @@ Esse recurso facilita o estudo de textos longos, permitindo retomar a leitura em
 
 \- Modo de clique configurável para evitar leitura acidental durante edição
 
+\- Dicionário técnico de pronúncia para termos de informática
+
 
 
 \---
 
 
 
-\## 👤 Autor
+\##👤 Autor
 
 
 

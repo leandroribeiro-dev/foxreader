@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.9</title>
+  <title>FoxReader V3.9.1</title>
 
   <style>
     * {
@@ -167,14 +167,21 @@
       background: white;
       border: 1px solid #bbb;
       border-radius: 8px;
-      padding: 36px 22px;
+      padding: 30px 34px 30px 28px;
       font-size: 20px;
+      line-height: 1.7;
       outline: none;
       white-space: pre-wrap;
+      word-break: break-word;
       overflow-y: auto;
       box-shadow: 0 2px 7px rgba(0,0,0,0.10);
       scroll-behavior: auto;
     }
+
+    .box::selection {
+      background: #cce5ff;
+    }
+
 
     .box:empty::before {
       content: attr(data-placeholder);
@@ -256,7 +263,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.9</h1>
+      <h1>FoxReader V3.9.1</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto. Clique em uma frase para iniciar daquele ponto.
@@ -316,7 +323,7 @@
     </main>
 
     <footer>
-      FoxReader V3.9 — HTML, CSS e JavaScript
+      FoxReader V3.9.1 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -1197,7 +1204,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.9 iniciado.");
+    registrarLog("FoxReader V3.9.1 iniciado.");
 
     carregarVozes();
 

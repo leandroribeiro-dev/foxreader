@@ -2,6 +2,34 @@
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
+## [3.9.1] - Em desenvolvimento
+
+### 🎨 Interface
+- Ajustado o espaçamento interno da caixa de texto.
+- Adicionado espaço extra no lado direito para reduzir conflito visual com a barra de rolagem.
+- Adicionado `line-height: 1.7` diretamente na caixa de leitura.
+- Adicionado `word-break: break-word` para evitar estouro de palavras longas.
+- Adicionada cor de seleção personalizada com `.box::selection`.
+
+### 🔧 Melhorado
+- Conforto visual durante leitura de textos longos.
+- Distância entre texto, borda e barra de rolagem.
+- Quebra de linhas em conteúdos com palavras extensas ou termos técnicos.
+- Aparência da seleção de texto dentro da área editável.
+
+### 🧠 Lógica
+- Nenhuma alteração funcional na lógica de leitura.
+- Mantida a leitura por clique adicionada na V3.9.
+- Mantida a limpeza de Markdown adicionada na V3.8.
+- Mantida a rolagem automática removida.
+
+### ⚠️ Tratamento
+- Redução do risco de texto colado ou visualmente sobreposto à borda da caixa.
+- Melhor comportamento visual em textos técnicos com palavras longas.
+- Preservação da estrutura de leitura e retomada já existente.
+
+---
+
 [3.9] - Em desenvolvimento
 
 ### ✨ Adicionado
