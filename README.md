@@ -14,7 +14,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-\*\*V3.8\*\*
+\*\*V3.9\*\*
 
 
 
@@ -37,6 +37,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- Retomada manual quando o navegador falha ao continuar a leitura
 
 \- Controle refinado da retomada por frase
+
+\- Início da leitura a partir de uma frase específica por clique no texto
 
 
 
@@ -74,6 +76,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Destaque da frase atual
 
+\- Frases renderizadas como itens clicáveis
+
 \- Acompanhamento visual com marcação amarela
 
 \- Acompanhamento visual ligável/desligável
@@ -83,6 +87,18 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- Controle manual da barra de rolagem pelo usuário
 
 \- Reposicionamento automático do texto ao iniciar, normalizar ou carregar arquivo
+
+
+
+\### 🖱️ Navegação por clique
+
+\- Clique em uma frase para iniciar a leitura daquele ponto
+
+\- Identificação automática da frase clicada
+
+\- Reconstrução do texto a partir da frase selecionada
+
+\- Registro em log da frase usada como ponto de início
 
 
 
@@ -97,6 +113,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- Registro de estados internos da síntese de voz
 
 \- Logs de retomada, pausa, continuação e avanço da frase atual
+
+\- Log específico para início da leitura por clique
 
 
 
@@ -134,6 +152,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Limpeza básica de sintaxe Markdown para melhorar a leitura em voz alta
 
+\- Detecção da posição/frase clicada para iniciar a leitura a partir de um ponto específico
+
 
 
 \---
@@ -144,7 +164,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-A versão \*\*V3.8\*\* adiciona tratamento básico para arquivos Markdown.
+A versão \*\*V3.9\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
 
 
 
@@ -182,6 +202,38 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 
 
+\## 🖱️ Leitura a partir de uma frase
+
+
+
+A versão \*\*V3.9\*\* adiciona a possibilidade de iniciar a leitura a partir de uma frase específica.
+
+
+
+Funcionamento básico:
+
+
+
+1\. O texto é dividido internamente em frases.
+
+2\. Cada frase passa a ser renderizada como um item clicável.
+
+3\. Ao clicar em uma frase, o FoxReader identifica o índice correspondente.
+
+4\. A leitura é iniciada a partir daquele ponto.
+
+5\. O destaque visual acompanha a frase atual, sem forçar a rolagem automática.
+
+
+
+Esse recurso facilita o estudo de textos longos, permitindo retomar a leitura em pontos intermediários sem precisar reiniciar desde o começo.
+
+
+
+\---
+
+
+
 \## ⚠️ Observações
 
 
@@ -196,9 +248,11 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 \- A marcação visual foi ajustada para priorizar estabilidade em vez de avanço agressivo.
 
-\- Na V3.8, a rolagem automática foi removida; o usuário controla a posição do texto manualmente.
+\- A rolagem automática continua removida; o usuário controla a posição do texto manualmente.
 
 \- Blocos de código Markdown são simplificados para melhorar a leitura em voz alta.
+
+\- Na V3.9, clicar no texto pode iniciar a leitura a partir da frase clicada.
 
 
 
@@ -224,13 +278,15 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 7\. Para texto colado manualmente, use \*\*Limpar Markdown\*\* se necessário.
 
-8\. Clique em \*\*Ler texto\*\*.
+8\. Clique em \*\*Ler texto\*\* para iniciar do começo.
 
-9\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
+9\. Clique diretamente em uma frase para iniciar a leitura daquele ponto.
 
-10\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+10\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
 
-11\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
+11\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+
+12\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
 
 
 
@@ -280,9 +336,7 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 
 
-\## 📈 Próximos passos (ideias)
-
-
+📈 Próximos passos (ideias)
 
 \- Interface dark mode
 
@@ -300,6 +354,10 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 \- Ajuste mais inteligente para leitura de blocos de código Markdown
 
+\- Controle opcional de rolagem a cada grupo de frases
+
+\- Modo de clique configurável para evitar leitura acidental durante edição
+
 
 
 \---
@@ -310,5 +368,5 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 
 
-Leandro Ribeiro 
+Leandro Ribeiro
 

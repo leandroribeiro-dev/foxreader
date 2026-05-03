@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.8</title>
+  <title>FoxReader V3.9</title>
 
   <style>
     * {
@@ -182,6 +182,16 @@
       pointer-events: none;
     }
 
+    .frase-item {
+      cursor: pointer;
+      border-radius: 4px;
+      padding: 1px 2px;
+    }
+
+    .frase-item:hover {
+      background: #e8f0fe;
+    }
+
     .frase-marcada {
       background: #fff176;
       border-radius: 4px;
@@ -246,10 +256,10 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.8</h1>
+      <h1>FoxReader V3.9</h1>
 
       <p class="subtitulo">
-        Cole, carregue ou normalize um texto para leitura em voz alta.
+        Cole, carregue ou normalize um texto. Clique em uma frase para iniciar daquele ponto.
       </p>
 
       <div class="linha-controles">
@@ -306,7 +316,7 @@
     </main>
 
     <footer>
-      FoxReader V3.8 — HTML, CSS e JavaScript
+      FoxReader V3.9 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -702,17 +712,16 @@
 
       frasesLeitura.forEach((frase, index) => {
         const fraseSegura = escaparHTML(frase);
+        const classe = index === indiceFrase
+          ? "frase-item frase-marcada"
+          : "frase-item";
 
-        if (index === indiceFrase) {
-          html += `<span class="frase-marcada">${fraseSegura}</span> `;
-        } else {
-          html += `${fraseSegura} `;
-        }
+        html += `<span class="${classe}" data-indice-frase="${index}">${fraseSegura}</span> `;
       });
 
       caixaTexto.innerHTML = html.trim();
 
-      // V3.8:
+      // V3.9:
       // A rolagem automática foi removida.
       // O usuário controla a barra manualmente.
     }
@@ -731,6 +740,83 @@
       }
 
       return -1;
+    }
+
+    function prepararFrasesParaClique() {
+      const textoAtual = caixaTexto.innerText.trim();
+
+      if (!textoAtual) {
+        return false;
+      }
+
+      textoOriginalLeitura = textoAtual;
+      frasesLeitura = dividirEmFrases(textoOriginalLeitura);
+
+      if (!frasesLeitura || frasesLeitura.length === 0) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function obterIndiceFraseDoClique(event) {
+      const alvo = event.target.closest(".frase-item");
+
+      if (alvo && alvo.dataset.indiceFrase !== undefined) {
+        return parseInt(alvo.dataset.indiceFrase, 10);
+      }
+
+      const selecao = window.getSelection();
+
+      if (!selecao || selecao.rangeCount === 0) {
+        return -1;
+      }
+
+      const range = selecao.getRangeAt(0);
+      const preRange = document.createRange();
+
+      preRange.selectNodeContents(caixaTexto);
+      preRange.setEnd(range.endContainer, range.endOffset);
+
+      const posicaoCaracter = preRange.toString().length;
+
+      return localizarFrasePorCaracterNoTextoCompleto(posicaoCaracter);
+    }
+
+    function localizarFrasePorCaracterNoTextoCompleto(charIndex) {
+      let acumulado = 0;
+
+      for (let i = 0; i < frasesLeitura.length; i++) {
+        const tamanho = frasesLeitura[i].length + 1;
+
+        if (charIndex >= acumulado && charIndex < acumulado + tamanho) {
+          return i;
+        }
+
+        acumulado += tamanho;
+      }
+
+      if (frasesLeitura.length > 0 && charIndex >= acumulado) {
+        return frasesLeitura.length - 1;
+      }
+
+      return -1;
+    }
+
+    function iniciarLeituraPeloClique(event) {
+      if (!prepararFrasesParaClique()) {
+        return;
+      }
+
+      const indiceClicado = obterIndiceFraseDoClique(event);
+
+      if (indiceClicado < 0 || indiceClicado >= frasesLeitura.length) {
+        registrarLog("Clique no texto: não foi possível identificar a frase.");
+        return;
+      }
+
+      registrarLog(`Clique no texto: iniciando pela frase ${indiceClicado + 1}/${frasesLeitura.length}.`);
+      prepararLeitura(textoOriginalLeitura, indiceClicado, true);
     }
 
     function registrarEstadoSintese(origem) {
@@ -1103,9 +1189,15 @@
       leitor.readAsText(arquivo, "UTF-8");
     }
 
+    caixaTexto.addEventListener("click", function(event) {
+      setTimeout(() => {
+        iniciarLeituraPeloClique(event);
+      }, 0);
+    });
+
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.8 iniciado.");
+    registrarLog("FoxReader V3.9 iniciado.");
 
     carregarVozes();
 

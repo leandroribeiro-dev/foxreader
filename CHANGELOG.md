@@ -2,8 +2,52 @@
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
-## \[3.8] - Em desenvolvimento
+[3.9] - Em desenvolvimento
 
+### ✨ Adicionado
+- Estilo `.frase-item` para transformar frases em elementos clicáveis.
+- Função `prepararFrasesParaClique()` para preparar o texto antes da leitura por clique.
+- Função `obterIndiceFraseDoClique()` para identificar a frase selecionada pelo usuário.
+- Função `localizarFrasePorCaracterNoTextoCompleto()` para localizar a frase pela posição do cursor.
+- Função `iniciarLeituraPeloClique()` para iniciar a leitura a partir da frase clicada.
+- Evento de clique na caixa de texto para acionar a leitura a partir de um ponto específico.
+
+### 🔧 Melhorado
+- Fluxo de leitura em textos longos, permitindo retomar a partir de uma frase intermediária.
+- Experiência de estudo, reduzindo a necessidade de reiniciar a leitura desde o começo.
+- Texto visual passou a ser renderizado com frases individualizadas quando o acompanhamento está ativo.
+- Subtítulo da interface atualizado para informar o uso do clique em frases.
+
+### 🧠 Lógica
+- O texto é dividido em frases antes da identificação do clique.
+- Cada frase renderizada recebe o atributo `data-indice-frase`.
+- O clique em uma frase permite reconstruir a leitura a partir daquele índice.
+- Quando o clique ocorre fora de uma frase marcada, o sistema tenta localizar a frase pela posição do cursor.
+- A leitura por clique reutiliza a lógica de retomada já existente.
+
+### 🎨 Interface
+- Frases receberam cursor visual de clique.
+- Frases passaram a ter destaque visual ao passar o mouse.
+- O destaque amarelo da frase atual foi mantido.
+- A rolagem automática continua removida.
+- O layout visual da V3.8 foi preservado.
+
+### 🧪 Diagnóstico
+- Adicionado log para registrar a frase escolhida por clique.
+- Adicionado log quando não for possível identificar a frase clicada.
+- Mantidos os logs de leitura, pausa, continuação, erro e conclusão.
+- Mantido o registro da frase atual durante o acompanhamento visual.
+
+### ⚠️ Tratamento
+- Validação de texto vazio antes de preparar frases para clique.
+- Validação do índice da frase clicada antes de iniciar a leitura.
+- Tratamento alternativo quando o clique não ocorre diretamente sobre uma frase renderizada.
+- Preservação da limpeza de Markdown adicionada na V3.8.
+- Preservação da leitura sem rolagem automática.
+
+---
+
+## [3.8] - Em desenvolvimento
 
 ### ✨ Adicionado
 
