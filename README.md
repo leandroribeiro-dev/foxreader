@@ -14,7 +14,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-\*\*V3.9.2\*\*
+\*\*V3.9.3\*\*
 
 
 
@@ -39,6 +39,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- Controle refinado da retomada por frase
 
 \- Início da leitura a partir de uma frase específica por clique no texto
+
+\- Pronúncia técnica para termos comuns de informática
 
 
 
@@ -114,6 +116,22 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
+\### 🗣️ Pronúncia técnica
+
+\- Botão \*\*Pronúncia técnica: Ligada/Desligada\*\*
+
+\- Recurso ligado por padrão
+
+\- A adaptação é aplicada apenas no texto enviado para fala
+
+\- O texto visual permanece original na caixa de leitura
+
+\- Substituição fonética de termos técnicos comuns
+
+\- Recurso pensado para melhorar a leitura de textos mistos em português com termos de informática em inglês
+
+
+
 \### 📊 Diagnóstico
 
 \- Sistema de log interno
@@ -129,6 +147,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- Log específico para início da leitura por clique
 
 \- Log de ativação e desativação do modo \*\*Clique para ler\*\*
+
+\- Log do estado da \*\*Pronúncia técnica\*\* no início da leitura
 
 
 
@@ -170,6 +190,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Controle manual do modo de leitura por clique para evitar acionamentos acidentais
 
+\- Dicionário técnico de pronúncia aplicado apenas durante a fala
+
 
 
 \---
@@ -180,7 +202,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-A versão \*\*V3.9.2\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
+A versão \*\*V3.9.3\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
 
 
 
@@ -222,7 +244,7 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 
 
-A versão \*\*V3.9.2\*\* mantém a possibilidade de iniciar a leitura a partir de uma frase específica, mas agora esse recurso precisa ser ativado manualmente.
+A versão \*\*V3.9.3\*\* mantém a possibilidade de iniciar a leitura a partir de uma frase específica, com ativação manual.
 
 
 
@@ -246,7 +268,91 @@ Funcionamento básico:
 
 
 
-Esse ajuste evita que a leitura seja iniciada acidentalmente durante edições no texto.
+\---
+
+
+
+\## 🗣️ Pronúncia técnica
+
+
+
+A versão \*\*V3.9.3\*\* adiciona um dicionário técnico de pronúncia.
+
+
+
+Esse recurso adapta termos comuns de informática antes de enviar o texto para a fala, sem modificar o texto exibido na tela.
+
+
+
+Exemplos de termos tratados:
+
+
+
+\- frontend
+
+\- backend
+
+\- framework
+
+\- deploy
+
+\- debug
+
+\- commit
+
+\- push
+
+\- pull
+
+\- merge
+
+\- branch
+
+\- endpoint
+
+\- browser
+
+\- dashboard
+
+\- database
+
+\- query
+
+\- array
+
+\- string
+
+\- JSON
+
+\- REST
+
+\- API
+
+\- HTTP
+
+\- HTML
+
+\- CSS
+
+\- JavaScript
+
+\- PHP
+
+\- SQL
+
+\- MySQL
+
+\- MariaDB
+
+\- Git
+
+\- GitHub
+
+\- Docker
+
+
+
+O objetivo é reduzir a leitura “aportuguesada” ou incorreta de termos técnicos em textos de estudo.
 
 
 
@@ -258,7 +364,7 @@ Esse ajuste evita que a leitura seja iniciada acidentalmente durante edições n
 
 
 
-A versão \*\*V3.9.2\*\* mantém os ajustes visuais da V3.9.1:
+A versão \*\*V3.9.3\*\* mantém os ajustes visuais da V3.9.1:
 
 
 
@@ -298,7 +404,9 @@ A versão \*\*V3.9.2\*\* mantém os ajustes visuais da V3.9.1:
 
 \- O modo \*\*Clique para ler\*\* fica desligado por padrão para preservar a edição do texto.
 
-\- A V3.9.2 é uma versão funcional de controle do recurso de leitura por clique.
+\- A \*\*Pronúncia técnica\*\* fica ligada por padrão, mas pode ser desativada.
+
+\- A pronúncia técnica altera apenas o texto falado, não o texto visual.
 
 
 
@@ -324,19 +432,21 @@ A versão \*\*V3.9.2\*\* mantém os ajustes visuais da V3.9.1:
 
 7\. Para texto colado manualmente, use \*\*Limpar Markdown\*\* se necessário.
 
-8\. Clique em \*\*Ler texto\*\* para iniciar do começo.
+8\. Use \*\*Pronúncia técnica\*\* para ligar ou desligar a adaptação de termos técnicos.
 
-9\. Para iniciar por uma frase específica, ative \*\*Clique para ler\*\*.
+9\. Clique em \*\*Ler texto\*\* para iniciar do começo.
 
-10\. Clique diretamente em uma frase para iniciar a leitura daquele ponto.
+10\. Para iniciar por uma frase específica, ative \*\*Clique para ler\*\*.
 
-11\. Desative \*\*Clique para ler\*\* quando quiser editar o texto sem iniciar leitura acidentalmente.
+11\. Clique diretamente em uma frase para iniciar a leitura daquele ponto.
 
-12\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
+12\. Desative \*\*Clique para ler\*\* quando quiser editar o texto sem iniciar leitura acidentalmente.
 
-13\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+13\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
 
-14\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
+14\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+
+15\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
 
 
 
@@ -406,7 +516,9 @@ A versão \*\*V3.9.2\*\* mantém os ajustes visuais da V3.9.1:
 
 \- Controle opcional de rolagem a cada grupo de frases
 
-\- Dicionário técnico de pronúncia para termos de informática
+\- Expansão do dicionário técnico de pronúncia
+
+\- Opção futura para editar o dicionário técnico pela interface
 
 
 
@@ -419,8 +531,6 @@ A versão \*\*V3.9.2\*\* mantém os ajustes visuais da V3.9.1:
 
 
 Leandro Ribeiro
-
-
 
 
 

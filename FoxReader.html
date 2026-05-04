@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.9.2</title>
+  <title>FoxReader V3.9.3</title>
 
   <style>
     * {
@@ -263,7 +263,7 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.9.2</h1>
+      <h1>FoxReader V3.9.3</h1>
 
       <p class="subtitulo">
         Cole, carregue ou normalize um texto. Ative o clique para ler quando quiser iniciar a partir de uma frase.
@@ -302,6 +302,7 @@
         <button class="adjust" onclick="limparMarkdownDoBox()">Limpar Markdown</button>
         <button id="btnAcompanhar" class="track-on" onclick="alternarAcompanhamento()">Acompanhar: Ligado</button>
         <button id="btnCliqueParaLer" class="track-off" onclick="alternarCliqueParaLer()">Clique para ler: Desligado</button>
+        <button id="btnPronunciaTecnica" class="track-on" onclick="alternarPronunciaTecnica()">Pronúncia técnica: Ligada</button>
         <button onclick="carregarVozes()">Recarregar vozes</button>
         <button class="log" onclick="alternarLog()">Mostrar log</button>
         <button class="log" onclick="baixarLog()">Baixar log</button>
@@ -324,7 +325,7 @@
     </main>
 
     <footer>
-      FoxReader V3.9.2 — HTML, CSS e JavaScript
+      FoxReader V3.9.3 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -334,6 +335,7 @@
     let mostrarTodasAsVozes = false;
     let acompanharLeitura = true;
     let cliqueParaLerAtivo = false;
+    let pronunciaTecnicaAtiva = true;
 
     let textoOriginalLeitura = "";
     let frasesLeitura = [];
@@ -356,6 +358,7 @@
     const btnAlternarVozes = document.getElementById("btnAlternarVozes");
     const btnAcompanhar = document.getElementById("btnAcompanhar");
     const btnCliqueParaLer = document.getElementById("btnCliqueParaLer");
+    const btnPronunciaTecnica = document.getElementById("btnPronunciaTecnica");
     const painelLog = document.getElementById("painelLog");
 
     function registrarLog(mensagem) {
@@ -462,6 +465,115 @@
         caixaTexto.title = "Modo edição ativo.";
         atualizarStatus("Clique para ler desligado. Modo edição liberado.");
       }
+    }
+
+
+    function alternarPronunciaTecnica() {
+      pronunciaTecnicaAtiva = !pronunciaTecnicaAtiva;
+
+      if (pronunciaTecnicaAtiva) {
+        btnPronunciaTecnica.textContent = "Pronúncia técnica: Ligada";
+        btnPronunciaTecnica.classList.remove("track-off");
+        btnPronunciaTecnica.classList.add("track-on");
+        atualizarStatus("Pronúncia técnica ligada. A adaptação será aplicada apenas na fala.");
+      } else {
+        btnPronunciaTecnica.textContent = "Pronúncia técnica: Desligada";
+        btnPronunciaTecnica.classList.remove("track-on");
+        btnPronunciaTecnica.classList.add("track-off");
+        atualizarStatus("Pronúncia técnica desligada.");
+      }
+    }
+
+    function substituirTermoTecnico(texto, termo, pronuncia) {
+      const regex = new RegExp(`\\b${termo}\\b`, "gi");
+      return texto.replace(regex, pronuncia);
+    }
+
+    function aplicarPronunciaTecnica(texto) {
+      if (!pronunciaTecnicaAtiva) {
+        return texto;
+      }
+
+      let textoAjustado = texto;
+
+      const substituicoes = [
+        ["frontend", "front end"],
+        ["front-end", "front end"],
+        ["backend", "beck end"],
+        ["back-end", "beck end"],
+        ["fullstack", "full stack"],
+        ["full-stack", "full stack"],
+        ["framework", "freime uórque"],
+        ["deploy", "deplói"],
+        ["debug", "dí bãg"],
+        ["bug", "bãg"],
+        ["commit", "comít"],
+        ["push", "púsh"],
+        ["pull", "púl"],
+        ["merge", "mârdje"],
+        ["branch", "bréntch"],
+        ["endpoint", "end póint"],
+        ["script", "escrípt"],
+        ["server", "sârver"],
+        ["client", "cláient"],
+        ["browser", "bráuser"],
+        ["layout", "leiáut"],
+        ["link", "línque"],
+        ["login", "lógin"],
+        ["logout", "lógaut"],
+        ["download", "dáunloud"],
+        ["upload", "ãploud"],
+        ["dashboard", "déshbord"],
+        ["database", "deita beise"],
+        ["query", "cuéri"],
+        ["array", "arrêi"],
+        ["string", "stríng"],
+        ["boolean", "búlean"],
+        ["integer", "íntedjer"],
+        ["float", "flout"],
+        ["while", "uáil"],
+        ["foreach", "for ítch"],
+        ["switch", "suítch"],
+        ["case", "quêis"],
+        ["echo", "éco"],
+        ["print", "prínt"],
+        ["static", "stétic"],
+        ["public", "pâblic"],
+        ["private", "práivet"],
+        ["protected", "protêcted"],
+        ["extends", "exténds"],
+        ["return", "ritârn"],
+        ["JSON", "djêi sôn"],
+        ["RESTful", "rést ful"],
+        ["REST", "rést"],
+        ["API", "A P I"],
+        ["APIs", "A P I s"],
+        ["HTTP", "H T T P"],
+        ["HTTPS", "H T T P S"],
+        ["HTML", "H T M L"],
+        ["CSS", "C S S"],
+        ["JS", "J S"],
+        ["PHP", "P H P"],
+        ["SQL", "S Q L"],
+        ["MySQL", "Mai Ésse Qu Éle"],
+        ["MariaDB", "Maria D B"],
+        ["PostgreSQL", "Postgres S Q L"],
+        ["PDO", "P D O"],
+        ["MySQLi", "Mai Ésse Qu Éle i"],
+        ["POO", "P O O"],
+        ["Git", "guít"],
+        ["GitHub", "guít rãb"],
+        ["Docker", "dóquer"],
+        ["JavaScript", "djáva script"],
+        ["Java", "djáva"]
+      ];
+
+      // Primeiro trata termos com caracteres especiais ou maiúsculas importantes.
+      substituicoes.forEach(([termo, pronuncia]) => {
+        textoAjustado = substituirTermoTecnico(textoAjustado, termo, pronuncia);
+      });
+
+      return textoAjustado;
     }
 
     function normalizarNome(texto) {
@@ -915,13 +1027,16 @@
       }
 
       registrarLog(`Acompanhamento visual: ${acompanharLeitura ? "ligado" : "desligado"}`);
+      registrarLog(`Pronúncia técnica: ${pronunciaTecnicaAtiva ? "ligada" : "desligada"}`);
       registrarLog(`Velocidade aplicada no início da leitura: ${obterVelocidade()}`);
 
       let textoParaLer = modoRetomada
         ? montarTextoAPartirDaFrase(indiceInicial)
         : textoOriginalLeitura;
 
-      const fala = new SpeechSynthesisUtterance(textoParaLer);
+      const textoParaFala = aplicarPronunciaTecnica(textoParaLer);
+
+      const fala = new SpeechSynthesisUtterance(textoParaFala);
       const vozSelecionada = obterVozSelecionada();
 
       fala.rate = obterVelocidade();
@@ -1229,7 +1344,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.9.2 iniciado.");
+    registrarLog("FoxReader V3.9.3 iniciado.");
 
     carregarVozes();
 

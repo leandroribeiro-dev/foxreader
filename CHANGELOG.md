@@ -2,6 +2,60 @@
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
+## [3.9.3] - Em desenvolvimento
+
+### ✨ Adicionado
+- Botão \*\*Pronúncia técnica: Ligada/Desligada\*\*.
+- Variável `pronunciaTecnicaAtiva` para controlar o estado do recurso.
+- Função `alternarPronunciaTecnica()` para ativar ou desativar a adaptação de termos técnicos.
+- Função `substituirTermoTecnico()` para substituir termos específicos antes da fala.
+- Função `aplicarPronunciaTecnica()` para aplicar o dicionário técnico ao texto lido.
+- Dicionário inicial de pronúncia para termos comuns de informática.
+- Log do estado da pronúncia técnica no início da leitura.
+
+### 🔧 Melhorado
+- Leitura de textos técnicos com termos em inglês.
+- Compreensão auditiva de conteúdos mistos em português e informática.
+- Controle do usuário sobre a adaptação fonética dos termos.
+- Experiência de estudo com textos sobre programação, web, banco de dados, Git e Docker.
+- Preservação do texto visual original durante a leitura.
+
+### 🧠 Lógica
+- O texto visual permanece inalterado na caixa de leitura.
+- A adaptação técnica é aplicada apenas no texto enviado ao `SpeechSynthesis`.
+- Antes da criação do `SpeechSynthesisUtterance`, o sistema gera `textoParaFala`.
+- Quando a pronúncia técnica está ligada, termos técnicos são substituídos por versões fonéticas.
+- Quando a pronúncia técnica está desligada, o texto é enviado para fala sem adaptações.
+- A lógica de leitura, pausa, retomada e clique por frase foi preservada.
+
+### 🗣️ Pronúncia técnica
+- Adicionadas substituições para termos como `frontend`, `backend`, `framework`, `deploy`, `debug`, `commit`, `push`, `pull`, `merge`, `branch`, `endpoint`, `script`, `server`, `client`, `browser`, `dashboard`, `database`, `query`, `array`, `string`, `boolean`, `JSON`, `REST`, `API`, `HTTP`, `HTML`, `CSS`, `JavaScript`, `PHP`, `SQL`, `MySQL`, `MariaDB`, `Git`, `GitHub` e `Docker`.
+- O recurso foi criado para reduzir pronúncias estranhas geradas por vozes em português ao ler termos técnicos em inglês.
+- O botão permite comparação direta entre leitura original e leitura adaptada.
+
+### 🎨 Interface
+- Adicionado botão \*\*Pronúncia técnica: Ligada\*\* junto aos controles principais.
+- O botão usa estado visual ligado/desligado com as classes já existentes.
+- O texto do botão alterna entre \*\*Pronúncia técnica: Ligada\*\* e \*\*Pronúncia técnica: Desligada\*\*.
+- Mantido o layout visual da V3.9.2.
+- Mantidos os botões de leitura, Markdown, acompanhamento e clique para ler.
+
+### 🧪 Diagnóstico
+- Adicionado registro de status ao ligar ou desligar a pronúncia técnica.
+- Adicionado log indicando se a pronúncia técnica está ligada ou desligada ao iniciar leitura.
+- Mantidos os logs de leitura por clique.
+- Mantidos os logs de leitura, pausa, continuação, erro e conclusão.
+
+### ⚠️ Tratamento
+- A adaptação fonética não altera o texto exibido ao usuário.
+- O recurso pode ser desligado quando a leitura original for preferível.
+- Preserva o modo edição como padrão inicial.
+- Preserva o controle manual de clique para ler.
+- Preserva os ajustes visuais da V3.9.1.
+- Preserva a limpeza de Markdown adicionada na V3.8.
+
+---
+
 ## [3.9.2] - Em desenvolvimento
 
 ### ✨ Adicionado
