@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>FoxReader V3.9.1</title>
+  <title>FoxReader V3.9.2</title>
 
   <style>
     * {
@@ -263,10 +263,10 @@
   <div class="app">
 
     <header>
-      <h1>FoxReader V3.9.1</h1>
+      <h1>FoxReader V3.9.2</h1>
 
       <p class="subtitulo">
-        Cole, carregue ou normalize um texto. Clique em uma frase para iniciar daquele ponto.
+        Cole, carregue ou normalize um texto. Ative o clique para ler quando quiser iniciar a partir de uma frase.
       </p>
 
       <div class="linha-controles">
@@ -301,6 +301,7 @@
         <button class="adjust" onclick="normalizarTexto()">Normalizar texto</button>
         <button class="adjust" onclick="limparMarkdownDoBox()">Limpar Markdown</button>
         <button id="btnAcompanhar" class="track-on" onclick="alternarAcompanhamento()">Acompanhar: Ligado</button>
+        <button id="btnCliqueParaLer" class="track-off" onclick="alternarCliqueParaLer()">Clique para ler: Desligado</button>
         <button onclick="carregarVozes()">Recarregar vozes</button>
         <button class="log" onclick="alternarLog()">Mostrar log</button>
         <button class="log" onclick="baixarLog()">Baixar log</button>
@@ -323,7 +324,7 @@
     </main>
 
     <footer>
-      FoxReader V3.9.1 — HTML, CSS e JavaScript
+      FoxReader V3.9.2 — HTML, CSS e JavaScript
     </footer>
 
   </div>
@@ -332,6 +333,7 @@
     let vozesDisponiveis = [];
     let mostrarTodasAsVozes = false;
     let acompanharLeitura = true;
+    let cliqueParaLerAtivo = false;
 
     let textoOriginalLeitura = "";
     let frasesLeitura = [];
@@ -353,6 +355,7 @@
     const caixaTexto = document.getElementById("caixaTexto");
     const btnAlternarVozes = document.getElementById("btnAlternarVozes");
     const btnAcompanhar = document.getElementById("btnAcompanhar");
+    const btnCliqueParaLer = document.getElementById("btnCliqueParaLer");
     const painelLog = document.getElementById("painelLog");
 
     function registrarLog(mensagem) {
@@ -440,6 +443,24 @@
 
         indiceFraseAtual = -1;
         atualizarStatus("Acompanhamento visual desligado.");
+      }
+    }
+
+    function alternarCliqueParaLer() {
+      cliqueParaLerAtivo = !cliqueParaLerAtivo;
+
+      if (cliqueParaLerAtivo) {
+        btnCliqueParaLer.textContent = "Clique para ler: Ligado";
+        btnCliqueParaLer.classList.remove("track-off");
+        btnCliqueParaLer.classList.add("track-on");
+        caixaTexto.title = "Clique em uma frase para iniciar a leitura daquele ponto.";
+        atualizarStatus("Clique para ler ligado. Clique em uma frase para iniciar daquele ponto.");
+      } else {
+        btnCliqueParaLer.textContent = "Clique para ler: Desligado";
+        btnCliqueParaLer.classList.remove("track-on");
+        btnCliqueParaLer.classList.add("track-off");
+        caixaTexto.title = "Modo edição ativo.";
+        atualizarStatus("Clique para ler desligado. Modo edição liberado.");
       }
     }
 
@@ -1197,6 +1218,10 @@
     }
 
     caixaTexto.addEventListener("click", function(event) {
+      if (!cliqueParaLerAtivo) {
+        return;
+      }
+
       setTimeout(() => {
         iniciarLeituraPeloClique(event);
       }, 0);
@@ -1204,7 +1229,7 @@
 
     speechSynthesis.onvoiceschanged = carregarVozes;
 
-    registrarLog("FoxReader V3.9.1 iniciado.");
+    registrarLog("FoxReader V3.9.2 iniciado.");
 
     carregarVozes();
 

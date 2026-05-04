@@ -2,6 +2,50 @@
 
 Todas as mudanças relevantes do projeto serão registradas aqui.
 
+## [3.9.2] - Em desenvolvimento
+
+### ✨ Adicionado
+- Botão \*\*Clique para ler: Ligado/Desligado\*\*.
+- Variável `cliqueParaLerAtivo` para controlar o estado do recurso.
+- Função `alternarCliqueParaLer()` para ativar ou desativar a leitura por clique.
+- Feedback visual do botão conforme o estado do recurso.
+- Mensagens de status para indicar modo edição ou modo clique ativo.
+- Título auxiliar na caixa de texto indicando o modo atual.
+
+### 🔧 Melhorado
+- Fluxo de edição dentro da caixa de texto.
+- Controle do recurso de leitura por clique.
+- Prevenção de leitura acidental durante edição do texto.
+- Clareza da interface sobre quando o clique inicia leitura.
+- Subtítulo da aplicação, orientando que o clique precisa ser ativado.
+
+### 🧠 Lógica
+- O clique para leitura passou a ficar desligado por padrão.
+- O evento de clique na caixa de texto agora verifica `cliqueParaLerAtivo` antes de iniciar a leitura.
+- Quando o recurso está desligado, o clique apenas permite edição normal do texto.
+- Quando o recurso está ligado, o clique inicia a leitura a partir da frase selecionada.
+- A leitura por clique continua reutilizando a lógica de retomada por frase.
+
+### 🎨 Interface
+- Adicionado botão específico para controlar o modo \*\*Clique para ler\*\*.
+- O botão usa estado visual ligado/desligado com as classes já existentes.
+- O texto do botão alterna entre \*\*Clique para ler: Ligado\*\* e \*\*Clique para ler: Desligado\*\*.
+- Mantido o layout visual da V3.9.1.
+
+### 🧪 Diagnóstico
+- Adicionado registro de status ao ligar ou desligar o modo de clique.
+- Mantidos os logs de leitura por clique adicionados na V3.9.
+- Mantidos os logs de leitura, pausa, continuação, erro e conclusão.
+
+### ⚠️ Tratamento
+- Evita acionamento acidental da leitura enquanto o usuário edita o conteúdo.
+- Preserva o modo edição como padrão inicial.
+- Mantém a leitura por clique disponível quando ativada manualmente.
+- Preserva os ajustes visuais da V3.9.1.
+- Preserva a limpeza de Markdown adicionada na V3.8.
+
+---
+
 ## [3.9.1] - Em desenvolvimento
 
 ### 🎨 Interface

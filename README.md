@@ -14,7 +14,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-\*\*V3.9.1\*\*
+\*\*V3.9.2\*\*
 
 
 
@@ -70,6 +70,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Limpeza rápida do conteúdo
 
+\- Modo de edição preservado por padrão
+
 
 
 \### 👁️ Leitura visual
@@ -96,15 +98,19 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-\### 🖱️ Navegação por clique
+\### 🖱️ Clique para ler
 
-\- Clique em uma frase para iniciar a leitura daquele ponto
+\- Botão \*\*Clique para ler: Ligado/Desligado\*\*
 
-\- Identificação automática da frase clicada
+\- Recurso desligado por padrão
 
-\- Reconstrução do texto a partir da frase selecionada
+\- Quando desligado, a caixa de texto fica livre para edição
 
-\- Registro em log da frase usada como ponto de início
+\- Quando ligado, clicar em uma frase inicia a leitura daquele ponto
+
+\- Feedback visual do estado do botão
+
+\- Mensagem de status indicando se o modo de clique está ativo ou inativo
 
 
 
@@ -121,6 +127,8 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 \- Logs de retomada, pausa, continuação e avanço da frase atual
 
 \- Log específico para início da leitura por clique
+
+\- Log de ativação e desativação do modo \*\*Clique para ler\*\*
 
 
 
@@ -160,7 +168,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 \- Detecção da posição/frase clicada para iniciar a leitura a partir de um ponto específico
 
-\- Ajustes visuais para melhorar conforto de leitura e evitar texto colado na borda
+\- Controle manual do modo de leitura por clique para evitar acionamentos acidentais
 
 
 
@@ -172,7 +180,7 @@ Leitor de texto em voz (Text-to-Speech) baseado em HTML + JavaScript, utilizando
 
 
 
-A versão \*\*V3.9.1\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
+A versão \*\*V3.9.2\*\* mantém o tratamento básico para arquivos Markdown iniciado na V3.8.
 
 
 
@@ -214,7 +222,7 @@ O objetivo é evitar que o leitor de voz pronuncie símbolos de formatação dur
 
 
 
-A versão \*\*V3.9.1\*\* mantém a possibilidade de iniciar a leitura a partir de uma frase específica.
+A versão \*\*V3.9.2\*\* mantém a possibilidade de iniciar a leitura a partir de uma frase específica, mas agora esse recurso precisa ser ativado manualmente.
 
 
 
@@ -222,15 +230,23 @@ Funcionamento básico:
 
 
 
-1\. O texto é dividido internamente em frases.
+1\. O recurso \*\*Clique para ler\*\* inicia desligado.
 
-2\. Cada frase passa a ser renderizada como um item clicável.
+2\. O usuário pode editar o texto normalmente.
 
-3\. Ao clicar em uma frase, o FoxReader identifica o índice correspondente.
+3\. Ao ativar \*\*Clique para ler\*\*, o clique em uma frase passa a iniciar a leitura daquele ponto.
 
-4\. A leitura é iniciada a partir daquele ponto.
+4\. O texto é dividido internamente em frases.
 
-5\. O destaque visual acompanha a frase atual, sem forçar a rolagem automática.
+5\. Cada frase pode ser identificada pelo sistema.
+
+6\. A leitura é iniciada a partir da frase selecionada.
+
+7\. O destaque visual acompanha a frase atual, sem forçar a rolagem automática.
+
+
+
+Esse ajuste evita que a leitura seja iniciada acidentalmente durante edições no texto.
 
 
 
@@ -238,15 +254,11 @@ Funcionamento básico:
 
 
 
-\## 🎨 Ajuste visual da V3.9.1
+\## 🎨 Ajuste visual herdado da V3.9.1
 
 
 
-A versão \*\*V3.9.1\*\* refinou a área principal de leitura.
-
-
-
-Foram ajustados:
+A versão \*\*V3.9.2\*\* mantém os ajustes visuais da V3.9.1:
 
 
 
@@ -259,10 +271,6 @@ Foram ajustados:
 \- `word-break` para evitar estouro de palavras longas
 
 \- cor de seleção do texto
-
-
-
-Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúdo ficar colado ou sobreposto à borda.
 
 
 
@@ -288,9 +296,9 @@ Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúd
 
 \- Blocos de código Markdown são simplificados para melhorar a leitura em voz alta.
 
-\- Clicar no texto pode iniciar a leitura a partir da frase clicada.
+\- O modo \*\*Clique para ler\*\* fica desligado por padrão para preservar a edição do texto.
 
-\- A V3.9.1 é uma versão de ajuste visual sobre a V3.9.
+\- A V3.9.2 é uma versão funcional de controle do recurso de leitura por clique.
 
 
 
@@ -318,13 +326,17 @@ Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúd
 
 8\. Clique em \*\*Ler texto\*\* para iniciar do começo.
 
-9\. Clique diretamente em uma frase para iniciar a leitura daquele ponto.
+9\. Para iniciar por uma frase específica, ative \*\*Clique para ler\*\*.
 
-10\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
+10\. Clique diretamente em uma frase para iniciar a leitura daquele ponto.
 
-11\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+11\. Desative \*\*Clique para ler\*\* quando quiser editar o texto sem iniciar leitura acidentalmente.
 
-12\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
+12\. Use \*\*Pausar\*\*, \*\*Continuar\*\* ou \*\*Parar\*\* conforme necessário.
+
+13\. Use \*\*Acompanhar\*\* para ligar ou desligar o destaque visual da leitura.
+
+14\. Use \*\*Mostrar log\*\* para acompanhar diagnósticos internos.
 
 
 
@@ -374,8 +386,6 @@ Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúd
 
 
 
-
-
 \## 📈 Próximos passos (ideias)
 
 \- Interface dark mode
@@ -396,8 +406,6 @@ Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúd
 
 \- Controle opcional de rolagem a cada grupo de frases
 
-\- Modo de clique configurável para evitar leitura acidental durante edição
-
 \- Dicionário técnico de pronúncia para termos de informática
 
 
@@ -406,9 +414,13 @@ Esses ajustes tornam a leitura mais confortável e reduzem o risco de o conteúd
 
 
 
-\##👤 Autor
+\## 👤 Autor
 
 
 
 Leandro Ribeiro
+
+
+
+
 
